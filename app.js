@@ -1,14 +1,13 @@
-// --- ▼▼▼ ใส่ FIREBASE CONFIG ของคุณที่นี่ ▼▼▼ ---
-// (คัดลอกมาจาก Firebase Project Settings)
+// --- ▼▼▼ นี่คือ FIREBASE CONFIG ของจริงของคุณ (แก้ไขแล้ว) ▼▼▼ ---
 const firebaseConfig = {
-    apiKey: "AIzaSy...",
+    apiKey: "AIzaSyBroNOP-3UiCxKO7OpT6RAA7NebSs8HS30",
     authDomain: "flowtv-login.firebaseapp.com",
     projectId: "flowtv-login",
-    storageBucket: "flowtv-login.appspot.com",
-    messagingSenderId: "...",
-    appId: "1:..."
+    storageBucket: "flowtv-login.firebasestorage.app",
+    messagingSenderId: "538439748085",
+    appId: "1:538439748085:web:9b115aef758fe3edf2b8bc"
 };
-// --- ▲▲▲ ใส่ FIREBASE CONFIG ของคุณที่นี่ ▲▲▲ ---
+// --- ▲▲▲ เรียบร้อย ▲▲▲ ---
 
 
 // --- เริ่มต้น FIREBASE ---
