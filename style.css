@@ -130,7 +130,7 @@ hr {
     margin: 1.5rem 0;
 }
 
-/* --- (ใหม่) Search Bar --- */
+/* --- Search Bar (เหมือนเดิม) --- */
 .search-container {
     width: 100%;
     margin: 1rem 0;
@@ -162,20 +162,39 @@ hr {
     overflow: hidden;
 }
 
-/* --- ลิสต์หนัง (Grid Layout) --- */
+/* --- (แก้) ลิสต์หนัง (Container) --- */
+/* (ลบ display: grid ออกจาก #movie-list-container) */
+#movie-list-container {
+    margin-top: 1.5rem;
+    display: flex; /* (ใหม่) */
+    flex-direction: column; /* (ใหม่) */
+    gap: 1.5rem; /* (ใหม่) ระยะห่างระหว่างแถว */
+}
+/* (แก้) H2 ที่เป็นชื่อเรื่องหลัก */
 h2 {
     font-weight: 700;
     color: #1A202C;
     margin-bottom: 0;
 }
-#movie-list-container {
-    margin-top: 1.5rem;
+/* (ใหม่) H2 ที่เป็นชื่อหมวดหมู่ */
+#movie-list-container > h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1A202C;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #3182CE;
+}
+
+/* (ใหม่) Grid สำหรับแต่ละแถวหมวดหมู่ */
+.movie-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1.5rem;
 }
 
-/* (แก้) การ์ดหนัง (เพิ่ม cursor: pointer) */
+
+/* --- การ์ดหนัง (movie-item) (เหมือนเดิม) --- */
 .movie-item {
     background: #FFFFFF;
     border-radius: 8px;
@@ -184,7 +203,7 @@ h2 {
     display: flex; 
     flex-direction: column; 
     overflow: hidden; 
-    cursor: pointer; /* (ใหม่) บอกใบ้ว่าคลิกได้ */
+    cursor: pointer; 
 }
 .movie-item:hover {
     transform: translateY(-5px);
@@ -224,12 +243,11 @@ h2 {
     color: #718096;
 }
 
-/* ★★★ (สำคัญ) ซ่อนปุ่มตอนในหน้าหลัก ★★★ */
 .movie-actions {
     display: none; 
 }
 
-/* --- (ใหม่) สไตล์ Modal (Pop-up) --- */
+/* --- สไตล์ Modal (Pop-up) (เหมือนเดิม) --- */
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -279,19 +297,15 @@ h2 {
     color: #4A5568;
 }
 
-/* (ใหม่) สไตล์เนื้อหาใน Modal */
 .modal-body-content {
     display: flex;
     gap: 1.5rem;
 }
-
-/* (แก้) ทำให้ Modal responsive บนจอมือถือ */
 @media (max-width: 600px) {
     .modal-body-content {
         flex-direction: column;
     }
 }
-
 .modal-poster {
     width: 150px;
     height: 225px;
@@ -327,7 +341,7 @@ h2 {
     gap: 8px;
 }
 
-/* (แก้) ทำให้ปุ่มใน Modal เหมือนกับปุ่มใน Grid */
+/* --- ปุ่ม Play (เหมือนเดิม) --- */
 .play-button {
     width: auto; 
     padding: 8px 12px; 
