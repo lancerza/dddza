@@ -108,12 +108,27 @@ body {
     color: var(--primary-hover-color);
 }
 
+/* Style specifically for header links acting as buttons */
+.header-link.btn.btn-light {
+    padding: 8px 12px;
+}
+
 
 /* --- Auth Forms (Apply Button Styles) --- */
 .form-container h2 { text-align: center; color: var(--primary-color); font-weight: 700; margin-bottom: 1.5rem; }
 input[type="email"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 1rem; background-color: #F7FAFC; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; font-size: 1rem; }
 input[type="email"]:focus, input[type="password"]:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); }
-#login-form button, #register-form button { width: 100%; margin-top: 0.5rem; } /* Apply primary style via JS or add class="btn btn-primary" in HTML */
+#login-form button, #register-form button {
+    width: 100%;
+    margin-top: 0.5rem;
+    /* Apply base styles directly */
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; border: none; border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-decoration: none; transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; white-space: nowrap; line-height: 1.2;
+    /* Apply primary variant styles */
+    background-color: var(--primary-color); color: white;
+}
+#login-form button:hover, #register-form button:hover { background-color: var(--primary-hover-color); }
+#login-form button:focus, #register-form button:focus { outline: none; box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3); }
+
 .form-container a { color: var(--primary-color); text-decoration: none; display: block; text-align: center; margin-top: 1rem; font-weight: 600; }
 .form-container a:hover { text-decoration: underline; }
 .error-message { color: var(--danger-color); font-size: 0.9rem; text-align: center; min-height: 1.2em; display: none; margin-top: 0.5rem; }
@@ -123,12 +138,20 @@ input[type="email"]:focus, input[type="password"]:focus { outline: none; border-
 .header h3 { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-color); display: flex; align-items: center; flex-wrap: wrap; gap: 0 10px; } /* Added gap for wrap */
 #premium-badge { font-size: 0.8rem; font-weight: 700; padding: 4px 8px; border-radius: 20px; background: var(--primary-color); color: white; white-space: nowrap; }
 .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-/* Apply btn styles to header buttons */
-#profile-link { font-size: 0.9rem; } /* Class .btn and .btn-light applied */
-#btn-logout { font-size: 0.9rem; } /* Class .btn and .btn-light applied */
+/* Apply btn styles to header buttons/links */
+#profile-link, #btn-logout {
+    font-size: 0.9rem;
+    /* Apply base styles directly */
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; white-space: nowrap; line-height: 1.2;
+    /* Apply light variant styles */
+    background-color: var(--light-bg-color); color: var(--text-muted-color);
+}
+#profile-link:hover, #btn-logout:hover { background-color: var(--light-bg-hover-color); }
+#profile-link:focus, #btn-logout:focus { outline: none; box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3); }
+
 
 hr { border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
-#player-hr { display: none; }
+#player-hr { display: none; } /* Initially hidden, shown by JS when player appears */
 
 /* --- Search Bar --- */
 .search-container { width: 100%; margin: 1rem 0; }
@@ -171,29 +194,34 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
 
 
 /* --- Modal (Apply Button Styles & Polish) --- */
-.modal-backdrop { /* ... */ }
-.modal-content { /* ... */ }
-.modal-close-btn { /* ... */ }
-.modal-body-content { /* ... */ }
-.modal-poster { /* ... */ }
-.modal-info { /* ... */ }
-.modal-info h2 { font-size: 1.6rem; /* Slightly smaller */ }
-.modal-info p { /* ... */ }
-.modal-episodes-title { /* ... */ }
+.modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 1rem; box-sizing: border-box; }
+.modal-content { background: #fff; border-radius: 12px; padding: 2rem; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+.modal-close-btn { position: absolute; top: 1rem; right: 1rem; width: 40px; height: 40px; font-size: 1.5rem; font-weight: 700; color: #A0AEC0; background: #EDF2F7; border: none; border-radius: 50%; cursor: pointer; line-height: 40px; text-align: center; padding: 0; transition: background-color 0.2s, color 0.2s; }
+.modal-close-btn:hover { background: #E0E6ED; color: #4A5568; }
+.modal-body-content { display: flex; gap: 1.5rem; }
+.modal-poster { width: 150px; height: 225px; object-fit: cover; border-radius: 8px; flex-shrink: 0; border: 1px solid var(--border-color); background-color: #E0E6ED;}
+.modal-info { flex-grow: 1; }
+.modal-info h2 { font-size: 1.6rem; margin: 0 0 8px 0; color: var(--text-color); }
+.modal-info p { font-size: 1rem; color: var(--text-muted-color); margin: 0 0 1.5rem 0; line-height: 1.5; }
+.modal-episodes-title { font-size: 1.2rem; font-weight: 700; color: var(--text-color); margin: 1.5rem 0 1rem 0; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
 .modal-episodes-list { display: flex; flex-wrap: wrap; gap: 10px; /* Increased gap */ }
 
-/* (★ Adjust) Play Button (in Modal) - Make rectangular */
+/* (★ Adjust) Play Button (in Modal) - Use base styles, adjust specifics */
 .play-button {
-    /* Inherit from .btn */
-    padding: 8px 12px !important; /* Override .btn padding */
-    font-size: 0.85rem !important; /* Override .btn font-size */
-    border-radius: 6px !important; /* Override .btn radius */
+    /* Base styles */
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap; line-height: 1.2;
+    /* Specifics */
+    padding: 8px 12px;
+    font-size: 0.85rem;
     flex-shrink: 0;
-    /* Apply color variants */
-    background: var(--light-bg-color);
-    color: var(--text-muted-color);
+    /* Color Variants */
+    background: var(--light-bg-color); color: var(--text-muted-color);
 }
 .play-button:hover { background: var(--light-bg-hover-color); }
+.play-button:focus { outline: none; box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3); }
 .play-button.premium-unlocked { background: var(--primary-color); color: white; font-weight: 700; }
 .play-button.premium-unlocked:hover { background: var(--primary-hover-color); }
 .play-button.premium-locked { background: var(--light-bg-color); color: #A0AEC0; cursor: not-allowed; opacity: 0.7; }
@@ -206,7 +234,9 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
 .skeleton-card { width: 170px; height: 255px; flex-shrink: 0; background-color: var(--border-color); border-radius: 8px; animation: skeleton-pulse 1.5s infinite ease-in-out; }
 
 /* --- Player Error --- */
-.player-error-message { /* ... */ }
+.player-error-message { width: 100%; background: #FFF5F5; border: 1px solid var(--danger-color); color: #C53030; padding: 1.5rem; text-align: center; border-radius: 8px; box-sizing: border-box; }
+.player-error-message h3 { margin: 0 0 0.5rem 0; color: #C53030; }
+.player-error-message p { margin: 0; font-size: 0.9rem; }
 
 /* --- Continue Watching Row Progress Bar --- */
 .continue-watching-item .box-img { position: relative; }
@@ -214,7 +244,7 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
 .progress-bar { height: 100%; background-color: var(--progress-bar-fill); width: 0%; transition: width 0.3s ease; border-radius: 0 0 0 8px; }
 .continue-watching-item .badge-bottom-right, .continue-watching-item .badge-bottom-left { bottom: 10px; } /* Adjusted badge position */
 
-/* --- Profile Page Styles (Apply Button Styles & Polish) --- */
+/* --- (★ Adjust) Profile Page Styles (Apply Button Styles & Polish) --- */
 #profile-container {
     padding: 1.5rem 2rem; background: #fff; border-radius: 12px; margin-top: 1rem;
     border: 1px solid var(--border-color); position: relative; /* For back button positioning */
@@ -222,10 +252,10 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
 #profile-container h2 { font-size: 1.4rem; font-weight: 700; color: var(--text-color); margin: 1.5rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary-color); display: flex; align-items: center; }
 #profile-container h2:first-of-type { margin-top: 0; }
 #profile-container h2 i { margin-right: 10px; color: var(--primary-color); font-size: 1.2em; }
-#profile-details p { margin: 0.75rem 0; font-size: 1rem; line-height: 1.6; display: flex; flex-wrap: wrap; align-items: baseline; }
-#profile-details strong { display: inline-block; width: 140px; color: var(--text-muted-color); font-weight: 600; flex-shrink: 0; margin-right: 10px; }
+#profile-details p { margin: 0.75rem 0; font-size: 1rem; line-height: 1.6; display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px 10px; } /* Use gap */
+#profile-details strong { display: inline-block; width: 140px; color: var(--text-muted-color); font-weight: 600; flex-shrink: 0; }
 #profile-expiry, #profile-status span { font-weight: 600; }
-#change-password-btn { margin-top: 10px; } /* Applied .btn .btn-secondary via JS */
+#change-password-btn { margin-top: 10px; /* Use class="btn btn-secondary" */ }
 
 .watch-history-list {
     border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem 1rem;
@@ -249,19 +279,23 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
 .history-item-info h4 { margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color); }
 .history-item-info p { margin: 0; font-size: 0.85rem; color: var(--text-light-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .history-item-info .history-date { font-size: 0.8rem; color: #A0AEC0; margin-top: 4px; }
-/* (★ New) Progress Bar in History Item */
-.history-item .progress-bar-container { height: 4px; border-radius: 0; }
+/* Progress Bar in History Item */
+.history-item .progress-bar-container { height: 4px; border-radius: 0; bottom: -1px; /* Slight overlap */ left: -1px; width: calc(100% + 2px); } /* Adjust position/size */
 .history-item .progress-bar { border-radius: 0; }
 #history-loading-msg { padding: 1rem 0; text-align: center; color: var(--text-light-color); }
 
-/* Profile Buttons (Apply base styles) */
-#profile-container .profile-actions { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 10px; }
-#clear-history-btn { /* Applied .btn .btn-danger via JS */ }
-#back-to-movies-btn { /* Applied .btn .btn-light via JS */
+/* Profile Buttons (Use base styles) */
+#profile-container .profile-actions { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;}
+/* Apply classes in JS or HTML: */
+/* #clear-history-btn uses .btn .btn-danger */
+/* #back-to-movies-btn uses .btn .btn-light */
+#back-to-movies-btn {
     position: absolute; top: 1.5rem; right: 1.5rem; /* Position top right */
     padding: 6px 10px; /* Smaller padding */
     font-size: 0.85rem;
 }
+#change-password-btn { /* Applied .btn .btn-secondary in HTML */ }
+
 
 /* --- Responsiveness --- */
 @media (max-width: 1024px) {
@@ -297,12 +331,16 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
     .modal-content { padding: 1.5rem; max-height: 85vh; }
     .modal-info h2 { font-size: 1.4rem; }
     .modal-info p { font-size: 0.9rem; }
-    .play-button { font-size: 0.8rem !important; padding: 6px 10px !important; }
+    .play-button { font-size: 0.8rem; padding: 6px 10px; } /* Adjusted from !important */
     #profile-details p { flex-direction: column; align-items: flex-start; gap: 2px; }
     #profile-details strong { width: auto; margin-right: 0; margin-bottom: 2px; }
     #back-to-movies-btn { position: static; /* Reset position */ float: none; margin-top: 1rem; width: 100%; /* Make full width */ }
     #profile-container .profile-actions { flex-direction: column; }
-    #profile-container button { width: 100%; margin-right: 0; } /* Full width buttons */
+    #profile-container button, #profile-container .btn { /* Target all buttons inside profile */
+        width: 100%; margin-right: 0;
+    }
+    #change-password-btn { width: auto !important; /* Keep change password button inline */ }
+
 }
 
 @media (max-width: 480px) {
@@ -321,5 +359,7 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
     .history-item-info h4 { font-size: 0.9rem; }
     .history-item-info p { font-size: 0.8rem; }
     .history-item-info .history-date { font-size: 0.75rem; }
+    #profile-container h2 { font-size: 1.1rem; }
+    #profile-details p { font-size: 0.9rem; }
 }
 
