@@ -1,5 +1,4 @@
 // --- ▼▼▼ FIREBASE CONFIG (config จริงของคุณ) ▼▼▼ ---
-// นี่คือ Config ที่ถูกต้องที่คุณเคยส่งมา
 const firebaseConfig = {
     apiKey: "AIzaSyBroNOP-3UiCxKO7OpT6RAA7NebSs8HS30",
     authDomain: "flowtv-login.firebaseapp.com",
@@ -14,9 +13,9 @@ const firebaseConfig = {
 // --- เริ่มต้น FIREBASE ---
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.firestore(); // ยังต้องใช้ db สำหรับ 'users' collection (เช็ค Premium)
+const db = firebase.firestore(); 
 
-// --- ดึง ELEMENT ต่างๆ จาก HTML ---
+// --- ดึง ELEMENT (เหมือนเดิม) ---
 const authContainer = document.getElementById('auth-container');
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
@@ -36,30 +35,18 @@ const btnLogout = document.getElementById('btn-logout');
 const movieListContainer = document.getElementById('movie-list-container');
 const playerDiv = document.getElementById('player-container');
 const premiumBadge = document.getElementById('premium-badge');
-
-// (ใหม่) ดึง Element ของ Search และ Modal
 const searchBar = document.getElementById('search-bar');
 const modalBackdrop = document.getElementById('modal-backdrop');
 const modalBody = document.getElementById('modal-body');
 const modalCloseBtn = document.getElementById('modal-close-btn');
 
-// (ใหม่) ตัวแปรสำหรับเก็บข้อมูลทั้งหมด
-let allMovies = []; // เก็บหนังทั้งหมดจาก data.json
-let currentUserProfile = null; // เก็บสถานะ Premium
+// --- ตัวแปร (เหมือนเดิม) ---
+let allMovies = []; 
+let currentUserProfile = null; 
 
-// --- ฟังก์ชันสลับหน้า LGOIN/REGISTER (เหมือนเดิม) ---
-showRegisterLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'block';
-});
-showLoginLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    loginForm.style.display = 'block';
-    registerForm.style.display = 'none';
-});
-
-// --- ฟังก์ชัน FIREBASE AUTH (เหมือนเดิม) ---
+// --- ฟังก์ชัน Auth & สลับหน้า (เหมือนเดิม) ---
+showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); loginForm.style.display = 'none'; registerForm.style.display = 'block'; });
+showLoginLink.addEventListener('click', (e) => { e.preventDefault(); loginForm.style.display = 'block'; registerForm.style.display = 'none'; });
 btnRegister.addEventListener('click', (e) => {
     e.preventDefault();
     const email = registerEmail.value;
@@ -68,7 +55,6 @@ btnRegister.addEventListener('click', (e) => {
         .then((userCredential) => {
             console.log('สมัครสมาชิกสำเร็จ:', userCredential.user);
             registerError.style.display = 'none';
-            // (แก้) สร้างโปรไฟล์ใน Firestore ทันที
             const newUserProfile = { email: email, isPremium: false };
             db.collection('users').doc(userCredential.user.uid).set(newUserProfile)
                 .catch(err => console.error("Error creating user profile: ", err));
@@ -98,53 +84,39 @@ btnLogout.addEventListener('click', (e) => {
     e.preventDefault();
     auth.signOut().then(() => {
         console.log('ออกจากระบบสำเร็จ');
-        // (แก้) หยุดและซ่อน Player
         if (jwplayer("player-container").getState()) {
              jwplayer("player-container").remove();
         }
         playerDiv.style.display = 'none'; 
     });
 });
+modalCloseBtn.addEventListener('click', () => { modalBackdrop.style.display = 'none'; modalBody.innerHTML = ''; });
+modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) { modalBackdrop.style.display = 'none'; modalBody.innerHTML = ''; } });
+// --- จบฟังก์ชัน Auth ---
 
-// --- (ใหม่) Event Listener สำหรับ Search Bar ---
+
+// --- (แก้) Event Listener สำหรับ Search Bar (เรียก renderMovieRows) ---
 searchBar.addEventListener('keyup', (e) => {
     const query = e.target.value.toLowerCase();
     
-    // กรองข้อมูลจาก allMovies
     const filteredMovies = allMovies.filter(movie => {
-        return movie.name.toLowerCase().includes(query);
+        return movie.title.toLowerCase().includes(query);
     });
     
-    // แสดงผลเฉพาะที่ค้นหาเจอ
-    renderMovies(filteredMovies); 
-});
-
-// --- (ใหม่) Event Listener สำหรับ Modal ---
-modalCloseBtn.addEventListener('click', () => {
-    modalBackdrop.style.display = 'none';
-    modalBody.innerHTML = ''; // เคลียร์เนื้อหา
-});
-modalBackdrop.addEventListener('click', (e) => {
-    // ถ้าคลิกที่พื้นหลังสีดำ ให้ปิด Modal
-    if (e.target === modalBackdrop) {
-        modalBackdrop.style.display = 'none';
-        modalBody.innerHTML = ''; // เคลียร์เนื้อหา
-    }
+    // (แก้) เรียกฟังก์ชัน render แถวใหม่
+    renderMovieRows(filteredMovies); 
 });
 
 
-// --- ตัวตรวจสอบสถานะล็อกอิน (หัวใจหลัก) ---
+// --- ตัวตรวจสอบสถานะล็อกอิน (เหมือนเดิม) ---
 auth.onAuthStateChanged((user) => {
     if (user) {
-        // --- ผู้ใช้ล็อกอินอยู่ ---
         console.log('ผู้ใช้ล็อกอินอยู่:', user.uid);
-        
         db.collection('users').doc(user.uid).get()
             .then((doc) => {
                 if (doc.exists) {
                     currentUserProfile = doc.data(); 
                 } else {
-                    // (แก้) กรณี user ล็อกอิน (เช่น ด้วย Google) แต่ยังไม่มีโปรไฟล์
                     console.log('สร้างโปรไฟล์ใหม่สำหรับ user นี้');
                     currentUserProfile = { email: user.email, isPremium: false };
                     db.collection('users').doc(user.uid).set(currentUserProfile);
@@ -160,7 +132,6 @@ auth.onAuthStateChanged((user) => {
                     premiumBadge.style.display = 'none';
                 }
                 
-                // (แก้) เรียก fetchMovies แค่ครั้งเดียว
                 if (allMovies.length === 0) {
                     fetchMovies(); 
                 }
@@ -174,10 +145,9 @@ auth.onAuthStateChanged((user) => {
             });
             
     } else {
-        // --- ผู้ใช้ออกจากระบบ ---
         console.log('ผู้ใช้ออกจากระบบแล้ว');
         currentUserProfile = null; 
-        allMovies = []; // (ใหม่) เคลียร์ข้อมูลหนัง
+        allMovies = []; 
         authContainer.style.display = 'block'; 
         appContainer.style.display = 'none';
         premiumBadge.style.display = 'none'; 
@@ -185,12 +155,10 @@ auth.onAuthStateChanged((user) => {
 });
 
 
-// --- ฟังก์ชันดึง "รายชื่อหนัง" จาก GITHUB ---
+// --- (แก้) ฟังก์ชันดึง "รายชื่อหนัง" (เรียก renderMovieRows) ---
 function fetchMovies() {
     movieListContainer.innerHTML = '<p>กำลังโหลดรายชื่อหนัง...</p>';
-    // (แก้) ใช้ URL จาก repo ของคุณ และเพิ่ม cache-bust
-    // (***สำคัญ***: ตรวจสอบให้แน่ใจว่า path นี้ถูกต้อง 'lancerza/dddza/main/data.json')
-    const dataUrl = 'https.://raw.githubusercontent.com/lancerza/dddza/main/data.json'; 
+    const dataUrl = 'https://raw.githubusercontent.com/lancerza/dddza/main/data.json'; 
     const cacheBustUrl = dataUrl + '?cachebust=' + new Date().getTime();
 
     fetch(cacheBustUrl)
@@ -201,84 +169,106 @@ function fetchMovies() {
             return response.json();
         })
         .then(data => { 
-            
-            // (แก้) ตรวจสอบโครงสร้าง data.json ของคุณ (ที่มี .groups)
-            if (!data.groups || data.groups.length === 0) {
-                movieListContainer.innerHTML = '<p>ยังไม่มีหนังในระบบ (ตรวจสอบไฟล์ data.json)</p>';
+            if (!data || data.length === 0) {
+                movieListContainer.innerHTML = '<p>ยังไม่มีหนังในระบบ</p>';
                 return;
             }
 
-            // (ใหม่) เก็บข้อมูลทั้งหมดไว้ในตัวแปรหลัก
-            allMovies = data.groups;
-            // (ใหม่) เรียกฟังก์ชัน render เพื่อแสดงผล
-            renderMovies(allMovies);
+            allMovies = data; 
+            // (แก้) เรียกฟังก์ชัน render แถวใหม่
+            renderMovieRows(allMovies);
         })
         .catch((error) => {
             console.error("Error fetching movie data: ", error);
-            movieListContainer.innerHTML = '<p>เกิดข้อผิดพลาดในการโหลดข้อมูลหนัง (อาจหาไฟล์ data.json ไม่เจอ หรือไฟล์มีปัญหา)</p>';
+            movieListContainer.innerHTML = '<p>เกิดข้อผิดพลาดในการโหลดข้อมูลหนัง</p>';
         });
 }
 
-// --- (ใหม่) ฟังก์ชันสำหรับแสดงผล Grid Layout ---
-function renderMovies(movies) {
-    movieListContainer.innerHTML = ''; // เคลียร์ของเก่าก่อน
+// --- (ใหม่!) ฟังก์ชันสำหรับแสดงผลแบบ "แถว" (Rows) ---
+function renderMovieRows(movies) {
+    movieListContainer.innerHTML = ''; // เคลียร์ของเก่า
     
     if (movies.length === 0) {
         movieListContainer.innerHTML = '<p>ไม่พบซีรี่ส์ที่คุณค้นหา</p>';
         return;
     }
+    
+    // --- 1. จัดกลุ่มหนังตาม Category ---
+    const moviesByCategory = movies.reduce((groups, movie) => {
+        const category = movie.category || 'อื่นๆ'; // ถ้าไม่มี category ให้อยู่ใน 'อื่นๆ'
+        if (!groups[category]) {
+            groups[category] = [];
+        }
+        groups[category].push(movie);
+        return groups;
+    }, {});
+
+    // --- 2. วนลูปเพื่อสร้างแต่ละแถว ---
+    // (จัดลำดับ 'ซีรี่ส์ไทย' 'ซีรี่ส์ฝรั่ง' ฯลฯ ถ้าต้องการ)
+    const categoryOrder = ['หนังไทย', 'ซีรี่ส์ฝรั่ง', 'การ์ตูน', 'อื่นๆ'];
+    
+    categoryOrder.forEach(category => {
+        const moviesInCategory = moviesByCategory[category];
+        
+        if (moviesInCategory && moviesInCategory.length > 0) {
+            // --- 3. สร้าง H2 (ชื่อหมวดหมู่) ---
+            const categoryTitle = document.createElement('h2');
+            categoryTitle.textContent = category;
+            movieListContainer.appendChild(categoryTitle);
+
+            // --- 4. สร้าง Grid สำหรับแถวนี้ ---
+            const movieGrid = document.createElement('div');
+            movieGrid.className = 'movie-grid'; // (ใช้ class ใหม่)
             
-    movies.forEach((group) => {
-        // --- สร้างการ์ด (Grid Item) ---
-        const movieElement = document.createElement('div');
-        movieElement.className = 'movie-item';
-        
-        // (ใหม่) เพิ่ม Event Listener ให้การ์ด เพื่อเปิด Modal
-        movieElement.addEventListener('click', () => {
-            openModal(group);
-        });
-        
-        // --- สร้างโปสเตอร์ ---
-        const posterImg = document.createElement('img');
-        posterImg.className = 'movie-poster';
-        // (แก้) ใช้ placeholder ที่ดีขึ้น
-        posterImg.src = group.image || 'https://placehold.co/180x270/EDF2F7/718096?text=No+Image';
-        posterImg.alt = group.name;
-        posterImg.loading = 'lazy'; // (ใหม่) Lazy Loading
-        posterImg.onerror = () => { // (ใหม่) กันรูปเจ๊ง
-            posterImg.src = 'https://placehold.co/180x270/EDF2F7/E53E3E?text=Error';
-        };
+            // --- 5. วนลูปสร้างการ์ดหนังในแถวนี้ ---
+            moviesInCategory.forEach((movie) => {
+                const movieElement = document.createElement('div');
+                movieElement.className = 'movie-item';
+                
+                movieElement.addEventListener('click', () => {
+                    openModal(movie); 
+                });
+                
+                const posterImg = document.createElement('img');
+                posterImg.className = 'movie-poster';
+                posterImg.src = movie.posterUrl || 'https://placehold.co/180x270/EDF2F7/718096?text=No+Image';
+                posterImg.alt = movie.title;
+                posterImg.loading = 'lazy'; 
+                posterImg.onerror = () => { 
+                    posterImg.src = 'https://placehold.co/180x270/EDF2F7/E53E3E?text=Error';
+                };
 
-        // --- สร้างกล่องข้อมูล ---
-        const movieDetails = document.createElement('div');
-        movieDetails.className = 'movie-details';
+                const movieDetails = document.createElement('div');
+                movieDetails.className = 'movie-details';
 
-        const movieInfo = document.createElement('div');
-        movieInfo.className = 'movie-info';
-        movieInfo.innerHTML = `
-            <h4>${group.name || 'ไม่มีชื่อเรื่อง'}</h4>
-            <p>${group.info || 'N/A'}</p>
-        `;
-        
-        // --- ประกอบร่าง (การ์ด) ---
-        movieElement.appendChild(posterImg);     
-        movieElement.appendChild(movieDetails);    
-        movieDetails.appendChild(movieInfo);     
-        
-        movieListContainer.appendChild(movieElement); 
+                const movieInfo = document.createElement('div');
+                movieInfo.className = 'movie-info';
+                movieInfo.innerHTML = `
+                    <h4>${movie.title || 'ไม่มีชื่อเรื่อง'}</h4> 
+                    <p>${movie.genre || 'N/A'}</p> 
+                `;
+                
+                movieElement.appendChild(posterImg);     
+                movieElement.appendChild(movieDetails);    
+                movieDetails.appendChild(movieInfo);     
+                
+                movieGrid.appendChild(movieElement); // (แก้) เพิ่มใน grid ของแถว
+            });
+            
+            movieListContainer.appendChild(movieGrid); // เพิ่ม grid ของแถว
+        }
     });
 }
 
-// --- (ใหม่) ฟังก์ชันสำหรับเปิดและสร้างเนื้อหาใน Modal ---
+// --- ฟังก์ชัน Modal (openModal) (เหมือนเดิม) ---
 function openModal(movie) {
-    // สร้างเนื้อหาใน Modal
     modalBody.innerHTML = `
         <div class="modal-body-content">
-            <img src="${movie.image || 'https://placehold.co/150x225/EDF2F7/718096?text=No+Image'}" alt="${movie.name}" class="modal-poster" onerror="this.src='https://placehold.co/150x225/EDF2F7/E53E3E?text=Error'">
+            <img src="${movie.posterUrl || 'https://placehold.co/150x225/EDF2F7/718096?text=No+Image'}" alt="${movie.title}" class="modal-poster" onerror="this.src='https://placehold.co/150x225/EDF2F7/E53E3E?text=Error'">
             <div class="modal-info">
-                <h2>${movie.name || 'ไม่มีชื่อเรื่อง'}</h2>
-                <p>${movie.info || 'N/A'}</p>
-                <h3 class="modal-episodes-title">ตอนทั้งหมด</h3>
+                <h2>${movie.title || 'ไม่มีชื่อเรื่อง'}</h2>
+                <p>${movie.genre || 'N/A'} (ปี ${movie.year || 'N/A'})</p>
+                <h3 class="modal-episodes-title" id="modal-title-type"></h3>
                 <div class="modal-episodes-list" id="modal-episodes">
                     <!-- ปุ่มตอนจะถูกเพิ่มที่นี่ -->
                 </div>
@@ -286,36 +276,40 @@ function openModal(movie) {
         </div>
     `;
 
-    // วนลูปสร้างปุ่มตอน
     const episodesList = document.getElementById('modal-episodes');
-    if (movie.stations && movie.stations.length > 0) {
-        movie.stations.forEach(station => {
-            // (ใหม่) ส่งสถานะ Premium ของ 'movie' (group) ไปด้วย
-            const epButton = createPlayButton(station.name, movie, station.url);
+    const titleType = document.getElementById('modal-title-type');
+
+    if (movie.episodes && movie.episodes.length > 0) {
+        titleType.textContent = 'ตอนทั้งหมด';
+        movie.episodes.forEach(ep => {
+            const epButton = createPlayButton(ep.title, movie, ep.streamUrl);
             episodesList.appendChild(epButton);
         });
+    } else if (movie.streamUrl) {
+        titleType.textContent = 'รับชม';
+        const playButton = createPlayButton('▶ เล่นเลย', movie, movie.streamUrl);
+        episodesList.appendChild(playButton);
     } else {
+        titleType.textContent = 'ข้อผิดพลาด';
         episodesList.innerHTML = '<p>ยังไม่มีตอนสำหรับเรื่องนี้</p>';
     }
 
-    // แสดง Modal
     modalBackdrop.style.display = 'flex';
 }
 
 
-// --- ฟังก์ชันสร้างปุ่ม (เช็ค PREMIUM) (แก้) ---
+// --- ฟังก์ชัน createPlayButton (เหมือนเดิม) ---
 function createPlayButton(buttonText, movie, streamUrl) {
     const playButton = document.createElement('button');
     playButton.className = 'play-button'; 
     
-    // (แก้) ตรวจสอบ currentUserProfile ก่อนใช้งาน
     const isMoviePremium = movie.isPremium || false; 
     const isUserPremium = currentUserProfile ? currentUserProfile.isPremium : false; 
     
     if(isMoviePremium) {
         playButton.textContent = '👑 ' + buttonText;
     } else {
-        playButton.textContent = '▶ ' + buttonText; // (แก้) เพิ่มเว้นวรรค
+        playButton.textContent = '▶ ' + buttonText;
     }
 
     if (isMoviePremium) {
@@ -327,7 +321,6 @@ function createPlayButton(buttonText, movie, streamUrl) {
     }
 
     playButton.addEventListener('click', (e) => {
-        // (ใหม่) ป้องกันไม่ให้ Event การคลิกปุ่ม ไปเด้งปิด Modal
         e.stopPropagation(); 
         
         if (isMoviePremium && !isUserPremium) {
@@ -343,27 +336,22 @@ function createPlayButton(buttonText, movie, streamUrl) {
     return playButton;
 }
 
-// --- ฟังก์ชันสำหรับเล่นวิดีโอ (แก้) ---
+// --- ฟังก์ชัน playMovie (เหมือนเดิม) ---
 function playMovie(videoUrl) {
     console.log('กำลังเล่น URL:', videoUrl);
-    
     playerDiv.style.display = 'block';
-
-    // (แก้) ตรวจสอบว่ามี JW Player หรือไม่
     try {
         jwplayer("player-container").setup({
             file: videoUrl,
-            type: "hls", // บอก JW Player ว่านี่คือไฟล์ HLS (m3u8)
+            type: "hls", 
             width: "100%",
             aspectratio: "16:9",
             autoplay: true 
         });
-
-        // เลื่อนจอขึ้นไปดู Player
         playerDiv.scrollIntoView({ behavior: 'smooth' });
     } catch (e) {
         console.error("JW Player error:", e);
-        playerDiv.innerHTML = `<p style="color:red; padding:1rem;">เกิดข้อผิดพลาดในการโหลด JW Player (อาจบล็อคโดย AdBlocker)</p>`;
+        playerDiv.innerHTML = `<p style="color:red; padding:1rem;">เกิดข้อผิดพลาดในการโหลด JW Player</p>`;
     }
 }
 
