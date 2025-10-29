@@ -1,11 +1,10 @@
-/* --- (ใหม่) Import Font (ยังใช้ Inter เหมือนเดิม) --- */
+/* --- Import Font (เหมือนเดิม) --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 body {
     font-family: 'Inter', Arial, sans-serif;
-    /* (ใหม่) พื้นหลังสีเทาอ่อน */
     background-color: #F4F7FA;
-    color: #1A202C; /* (ใหม่) ตัวหนังสือสีเทาเข้ม */
+    color: #1A202C; 
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -16,16 +15,12 @@ body {
 }
 
 #auth-container, #app-container {
-    /* (ใหม่) พื้นหลังสีขาว */
     background-color: #FFFFFF;
-    /* (ใหม่) เส้นขอบบางๆ */
     border: 1px solid #E0E6ED;
-    /* (ใหม่) เพิ่มความมน */
     border-radius: 12px;
     padding: 2rem;
     width: 90%; 
-    max-width: 900px; 
-    /* (ใหม่) เงาแบบเบาๆ */
+    max-width: 1200px; /* (แก้) ขยายความกว้างสูงสุดสำหรับ Grid */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
     transition: all 0.3s ease;
@@ -35,22 +30,19 @@ body {
     max-width: 450px; 
 }
 
-/* --- ส่วน AUTH (ปรับเป็นคลีน) --- */
+/* --- ส่วน AUTH (เหมือนเดิม) --- */
 .form-container h2 {
     text-align: center;
-    /* (ใหม่) สีหลัก (น้ำเงิน) */
     color: #3182CE; 
     font-weight: 700;
 }
-
 input[type="email"], input[type="password"] {
     width: 100%;
     padding: 12px;
     margin-bottom: 1rem;
-    /* (ใหม่) สไตล์ช่องกรอก */
     background-color: #F7FAFC;
     border: 1px solid #E0E6ED;
-    border-radius: 6px; /* (แก้) */
+    border-radius: 6px; 
     color: #1A202C;
     box-sizing: border-box; 
     font-family: 'Inter', Arial, sans-serif;
@@ -60,8 +52,6 @@ input[type="email"]:focus, input[type="password"]:focus {
     border-color: #3182CE;
     box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
 }
-
-/* (ใหม่) ปุ่ม Login/Register สีน้ำเงิน */
 button {
     width: 100%;
     padding: 12px;
@@ -77,9 +67,8 @@ button {
 button:hover {
     background-color: #2B6CB0;
 }
-
 .form-container a {
-    color: #3182CE; /* (ใหม่) */
+    color: #3182CE; 
     text-decoration: none;
     display: block;
     text-align: center;
@@ -89,24 +78,22 @@ button:hover {
 .form-container a:hover {
     text-decoration: underline;
 }
-
 .error-message {
-    color: #E53E3E; /* (ใหม่) สีแดงสำหรับ Error */
+    color: #E53E3E; 
     font-size: 0.9rem;
     text-align: center;
     min-height: 1.2em;
     display: none; 
 }
 
-/* --- ส่วน APP (ปรับเป็นคลีน) --- */
-
+/* --- ส่วน APP (เหมือนเดิม) --- */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap; 
     gap: 10px;
-    border-bottom: 1px solid #E0E6ED; /* (ใหม่) */
+    border-bottom: 1px solid #E0E6ED; 
     padding-bottom: 1rem;
 }
 .header h3 {
@@ -115,8 +102,6 @@ button:hover {
     font-weight: 700;
     color: #1A202C;
 }
-
-/* (ใหม่) ป้าย Premium สีน้ำเงิน */
 #premium-badge {
     font-size: 0.8rem;
     font-weight: 700;
@@ -127,8 +112,6 @@ button:hover {
     margin-left: 10px;
     vertical-align: middle;
 }
-
-/* (ใหม่) ปุ่ม Logout */
 .header button {
     width: auto;
     padding: 8px 12px;
@@ -141,14 +124,13 @@ button:hover {
 .header button:hover {
     background-color: #E0E6ED;
 }
-
 hr {
     border: 0;
     border-top: 1px solid #E0E6ED;
     margin: 1.5rem 0;
 }
 
-/* --- Player --- */
+/* --- Player (เหมือนเดิม) --- */
 #player-container {
     width: 100%;
     margin-bottom: 1rem;
@@ -157,66 +139,76 @@ hr {
     overflow: hidden;
 }
 
-/* --- ลิสต์หนัง (คลีน) --- */
+/* --- ▼▼▼ (ใหม่) ลิสต์หนัง (แบบ Grid) ▼▼▼ --- */
 h2 {
     font-weight: 700;
     color: #1A202C;
 }
 #movie-list-container {
     margin-top: 1.5rem;
+    /* (ใหม่) นี่คือหัวใจของ Grid Layout */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
 }
 
+/* (ใหม่) การ์ดหนัง 1 ใบ */
 .movie-item {
     background: #FFFFFF;
-    padding: 1rem;
     border-radius: 8px;
-    margin-bottom: 1rem; 
+    border: 1px solid #E0E6ED;
+    transition: all 0.2s ease;
+    /* (ใหม่) เปลี่ยนเป็นแนวตั้ง */
     display: flex; 
-    align-items: flex-start; 
-    gap: 1.5rem;
-    border: 1px solid #E0E6ED; /* (ใหม่) */
-    transition: background-color 0.2s ease;
-    /* (ลบ) เอฟเฟกต์หนักๆ ออก */
+    flex-direction: column; 
+    overflow: hidden; /* (ใหม่) เพื่อให้โปสเตอร์มุมบนมน */
+    /* (ลบ) ลบ padding, gap, align-items เก่าออก */
 }
 .movie-item:hover {
-    background-color: #F7FAFC; /* (ใหม่) Hover เบาๆ */
+    /* (ใหม่) เงาตอน Hover */
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* โปสเตอร์ (ซ้าย) */
+/* (ใหม่) โปสเตอร์ (ส่วนบน) */
 .movie-poster {
-    width: 130px; 
-    height: 195px;
+    width: 100%; /* (แก้) */
+    height: 270px; /* (แก้) สัดส่วน 180x270 */
     object-fit: cover; 
-    border-radius: 4px; 
     flex-shrink: 0; 
-    background-color: #EDF2F7; /* (ใหม่) */
-    border: 1px solid #E0E6ED;
+    background-color: #EDF2F7; 
+    border-bottom: 1px solid #E0E6ED;
+    /* (ลบ) radius, border เก่าออก */
 }
 
-/* กล่องข้อมูล (ขวา) */
+/* (ใหม่) กล่องข้อมูล (ส่วนล่าง) */
 .movie-details {
     display: flex;
     flex-direction: column; 
     flex-grow: 1; 
-    min-height: 195px;
-    justify-content: space-between;
+    padding: 1rem; /* (ใหม่) ย้าย padding มาไว้ตรงนี้ */
+    /* (ลบ) min-height */
 }
 .movie-info {
     flex-grow: 1; 
 }
 .movie-info h4 {
-    margin: 0 0 8px 0;
-    color: #1A202C; /* (แก้) */
-    font-size: 1.4rem;
+    margin: 0 0 4px 0; /* (แก้) */
+    color: #1A202C;
+    font-size: 1.1rem; /* (แก้) */
     font-weight: 700;
+    /* (ใหม่) กันข้อความยาวเกิน */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .movie-info p {
     margin: 0;
-    font-size: 0.9rem;
-    color: #718096; /* (แก้) */
+    font-size: 0.85rem; /* (แก้) */
+    color: #718096;
 }
 
-/* กล่องปุ่ม (ล่าง-ขวา) */
+/* กล่องปุ่ม (เหมือนเดิม) */
 .movie-actions {
     display: flex;
     flex-wrap: wrap; 
@@ -224,15 +216,14 @@ h2 {
     margin-top: 10px; 
 }
 
-/* --- (ใหม่) ดีไซน์ปุ่ม Play (คลีน) --- */
+/* --- (เหมือนเดิม) ดีไซน์ปุ่ม Play (คลีน) --- */
 .play-button {
     width: auto; 
-    padding: 8px 16px; 
-    font-size: 0.9rem;
-    font-weight: 600; /* (แก้) */
+    padding: 8px 12px; /* (แก้) */
+    font-size: 0.8rem; /* (แก้) */
+    font-weight: 600;
     flex-shrink: 0; 
     border-radius: 20px;
-    /* (ใหม่) ปุ่มเทาอ่อน */
     background: #EDF2F7; 
     color: #4A5568;
     border: none;
@@ -240,10 +231,8 @@ h2 {
 }
 .play-button:hover {
     background: #E0E6ED;
-    transform: none; /* (ลบ) */
+    transform: none; 
 }
-
-/* (ใหม่) ปุ่ม Premium ที่ปลดล็อคแล้ว (สีน้ำเงิน) */
 .play-button.premium-unlocked {
     background: #3182CE;
     color: white;
@@ -252,8 +241,6 @@ h2 {
 .play-button.premium-unlocked:hover {
     background: #2B6CB0;
 }
-
-/* (ใหม่) ปุ่ม Premium ที่ยังล็อค */
 .play-button.premium-locked {
     background: #EDF2F7;
     color: #A0AEC0;
