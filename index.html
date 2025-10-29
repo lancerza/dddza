@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เว็บหนังซีรี่ (FLOWTV)</title>
     
-    <!-- ▼▼▼ (ใหม่) โหลดฟอนต์ Inter ▼▼▼ -->
+    <!-- โหลดฟอนต์ Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
     
@@ -20,7 +20,7 @@
 
     <!-- (ส่วน Auth Container เหมือนเดิม) -->
     <div id="auth-container">
-        <!-- ... (โค้ดฟอร์มล็อกอิน/สมัครสมาชิก) ... -->
+        <!-- ฟอร์มล็อกอิน -->
         <div id="login-form" class="form-container">
             <h2>เข้าสู่ระบบ</h2>
             <input type="email" id="login-email" placeholder="อีเมล" required>
@@ -29,6 +29,7 @@
             <p class="error-message" id="login-error"></p>
             <a href="#" id="show-register">ยังไม่มีบัญชี? สมัครสมาชิก</a>
         </div>
+        <!-- ฟอร์มสมัครสมาชิก -->
         <div id="register-form" class="form-container" style="display: none;">
             <h2>สมัครสมาชิก</h2>
             <input type="email" id="register-email" placeholder="อีเมล" required>
@@ -41,19 +42,33 @@
 
     <!-- ส่วนสำหรับผู้ที่ล็อกอินแล้ว -->
     <div id="app-container" style="display: none;">
-        <div class="header"> <!-- (แก้) class พิมพ์เล็ก -->
-            <!-- ▼▼▼ (ใหม่) เพิ่มป้าย PREMIUM BADGE ▼▼▼ -->
+        <div class="header"> 
             <h3>ยินดีต้อนรับ <span id="user-email"></span> <span id="premium-badge" style="display:none;">👑 PREMIUM</span></h3>
             <button id="btn-logout">ออกจากระบบ</button>
         </div>
         
-        <!-- ▼▼▼ (ใหม่) ซ่อน Player ไว้ก่อน ▼▼▼ -->
+        <!-- ▼▼▼ (ใหม่) ช่อง Search Bar ▼▼▼ -->
+        <div class="search-container">
+            <input type="text" id="search-bar" placeholder="ค้นหาซีรี่ส์...">
+        </div>
+        
         <div id="player-container" style="display: none;"></div>
         <hr>
         
         <h2>รายชื่อหนังและซีรี่</h2>
         <div id="movie-list-container">
+            <!-- (Grid Layout จะถูกสร้างที่นี่) -->
             <p>กำลังโหลด...</p>
+        </div>
+    </div>
+    
+    <!-- ▼▼▼ (ใหม่) โครงสร้าง Modal (Pop-up) ▼▼▼ -->
+    <div id="modal-backdrop" class="modal-backdrop" style="display: none;">
+        <div id="modal-content" class="modal-content">
+            <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            <div id="modal-body">
+                <!-- (ข้อมูล Modal จะถูกเติมที่นี่โดย JS) -->
+            </div>
         </div>
     </div>
 
