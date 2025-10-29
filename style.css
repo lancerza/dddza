@@ -20,7 +20,7 @@ body {
     border-radius: 12px;
     padding: 2rem;
     width: 90%; 
-    max-width: 1200px; /* (แก้) ขยายความกว้างสูงสุดสำหรับ Grid */
+    max-width: 1200px; 
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
     transition: all 0.3s ease;
@@ -130,6 +130,29 @@ hr {
     margin: 1.5rem 0;
 }
 
+/* --- (ใหม่) Search Bar --- */
+.search-container {
+    width: 100%;
+    margin: 1rem 0;
+}
+#search-bar {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-family: 'Inter', Arial, sans-serif;
+    border: 1px solid #E0E6ED;
+    border-radius: 6px;
+    background-color: #F7FAFC;
+    color: #1A202C;
+    box-sizing: border-box;
+}
+#search-bar:focus {
+    outline: none;
+    border-color: #3182CE;
+    box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+}
+
+
 /* --- Player (เหมือนเดิม) --- */
 #player-container {
     width: 100%;
@@ -139,88 +162,176 @@ hr {
     overflow: hidden;
 }
 
-/* --- ▼▼▼ (ใหม่) ลิสต์หนัง (แบบ Grid) ▼▼▼ --- */
+/* --- ลิสต์หนัง (Grid Layout) --- */
 h2 {
     font-weight: 700;
     color: #1A202C;
+    margin-bottom: 0;
 }
 #movie-list-container {
     margin-top: 1.5rem;
-    /* (ใหม่) นี่คือหัวใจของ Grid Layout */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1.5rem;
 }
 
-/* (ใหม่) การ์ดหนัง 1 ใบ */
+/* (แก้) การ์ดหนัง (เพิ่ม cursor: pointer) */
 .movie-item {
     background: #FFFFFF;
     border-radius: 8px;
     border: 1px solid #E0E6ED;
     transition: all 0.2s ease;
-    /* (ใหม่) เปลี่ยนเป็นแนวตั้ง */
     display: flex; 
     flex-direction: column; 
-    overflow: hidden; /* (ใหม่) เพื่อให้โปสเตอร์มุมบนมน */
-    /* (ลบ) ลบ padding, gap, align-items เก่าออก */
+    overflow: hidden; 
+    cursor: pointer; /* (ใหม่) บอกใบ้ว่าคลิกได้ */
 }
 .movie-item:hover {
-    /* (ใหม่) เงาตอน Hover */
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* (ใหม่) โปสเตอร์ (ส่วนบน) */
 .movie-poster {
-    width: 100%; /* (แก้) */
-    height: 270px; /* (แก้) สัดส่วน 180x270 */
+    width: 100%; 
+    height: 270px; 
     object-fit: cover; 
     flex-shrink: 0; 
     background-color: #EDF2F7; 
     border-bottom: 1px solid #E0E6ED;
-    /* (ลบ) radius, border เก่าออก */
 }
 
-/* (ใหม่) กล่องข้อมูล (ส่วนล่าง) */
 .movie-details {
     display: flex;
     flex-direction: column; 
     flex-grow: 1; 
-    padding: 1rem; /* (ใหม่) ย้าย padding มาไว้ตรงนี้ */
-    /* (ลบ) min-height */
+    padding: 1rem; 
 }
 .movie-info {
     flex-grow: 1; 
 }
 .movie-info h4 {
-    margin: 0 0 4px 0; /* (แก้) */
+    margin: 0 0 4px 0; 
     color: #1A202C;
-    font-size: 1.1rem; /* (แก้) */
+    font-size: 1.1rem; 
     font-weight: 700;
-    /* (ใหม่) กันข้อความยาวเกิน */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .movie-info p {
     margin: 0;
-    font-size: 0.85rem; /* (แก้) */
+    font-size: 0.85rem; 
     color: #718096;
 }
 
-/* กล่องปุ่ม (เหมือนเดิม) */
+/* (ซ่อน) ซ่อนปุ่มตอนในหน้าหลัก */
 .movie-actions {
-    display: flex;
-    flex-wrap: wrap; 
-    gap: 8px;
-    margin-top: 10px; 
+    display: none; 
 }
 
-/* --- (เหมือนเดิม) ดีไซน์ปุ่ม Play (คลีน) --- */
+/* --- (ใหม่) สไตล์ Modal (Pop-up) --- */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #A0AEC0;
+    background: #EDF2F7;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    line-height: 40px;
+    text-align: center;
+    padding: 0;
+}
+.modal-close-btn:hover {
+    background: #E0E6ED;
+    color: #4A5568;
+}
+
+/* (ใหม่) สไตล์เนื้อหาใน Modal */
+.modal-body-content {
+    display: flex;
+    gap: 1.5rem;
+}
+
+/* (แก้) ทำให้ Modal responsive บนจอมือถือ */
+@media (max-width: 600px) {
+    .modal-body-content {
+        flex-direction: column;
+    }
+}
+
+.modal-poster {
+    width: 150px;
+    height: 225px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+    border: 1px solid #E0E6ED;
+}
+.modal-info {
+    flex-grow: 1;
+}
+.modal-info h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.8rem;
+    color: #1A202C;
+}
+.modal-info p {
+    font-size: 1rem;
+    color: #4A5568;
+    margin: 0 0 1.5rem 0;
+}
+.modal-episodes-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1A202C;
+    margin: 0 0 1rem 0;
+    border-bottom: 1px solid #E0E6ED;
+    padding-bottom: 0.5rem;
+}
+.modal-episodes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* (แก้) ทำให้ปุ่มใน Modal เหมือนกับปุ่มใน Grid */
 .play-button {
     width: auto; 
-    padding: 8px 12px; /* (แก้) */
-    font-size: 0.8rem; /* (แก้) */
+    padding: 8px 12px; 
+    font-size: 0.8rem; 
     font-weight: 600;
     flex-shrink: 0; 
     border-radius: 20px;
