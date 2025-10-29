@@ -7,7 +7,8 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    padding: 1rem 0; /* เพิ่ม padding บนล่าง */
+    padding: 2rem 0; /* เพิ่ม padding บนล่างเผื่อเนื้อหายาว */
+    box-sizing: border-box;
 }
 
 #auth-container, #app-container {
@@ -16,10 +17,12 @@ body {
     border-radius: 8px;
     padding: 2rem;
     width: 90%; /* ปรับความกว้างให้ยืดหยุ่น */
-    max-width: 600px; /* เพิ่มความกว้างสูงสุด */
+    max-width: 700px; /* ขยายความกว้างสูงสุดสำหรับเลย์เอาต์ใหม่ */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
 }
+
+/* --- ส่วน AUTH --- */
 
 .form-container h2 {
     text-align: center;
@@ -73,6 +76,8 @@ button:hover {
     display: none; 
 }
 
+/* --- ส่วน APP (หลังล็อกอิน) --- */
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -83,6 +88,7 @@ button:hover {
 
 .header h3 {
     margin: 0;
+    font-size: 1rem;
     word-break: break-all; /* ตัดคำถ้าอีเมลยาว */
 }
 
@@ -90,23 +96,26 @@ button:hover {
     width: auto;
     padding: 8px 12px;
     background-color: #555;
+    font-size: 0.9rem;
 }
 .header button:hover {
     background-color: #777;
 }
 
 hr {
-    border: 1px solid #333;
+    border: 0;
+    border-top: 1px solid #333;
     margin: 1.5rem 0;
 }
 
-/* --- ส่วนของ Player และ List --- */
-
+/* --- Player --- */
 #player-container {
     width: 100%;
     margin-bottom: 1rem;
+    background-color: #000; /* พื้นหลังสีดำเผื่อ player ยังไม่โหลด */
 }
 
+/* --- ลิสต์หนัง (ใหม่) --- */
 #movie-list-container {
     margin-top: 1rem;
 }
@@ -115,21 +124,38 @@ hr {
     background-color: #222;
     padding: 1rem;
     border-radius: 4px;
-    margin-bottom: 0.5rem;
-    display: flex; /* จัดเรียงปุ่มกับข้อความ */
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap; /* รองรับจอเล็ก */
-    gap: 10px;
+    margin-bottom: 1rem; 
+    display: flex; 
+    align-items: flex-start; /* จัดให้อยู่บนสุด */
+    gap: 1rem; /* ระยะห่างระหว่างรูปกับข้อมูล */
+}
+
+/* โปสเตอร์ (ซ้าย) */
+.movie-poster {
+    width: 100px; 
+    height: 150px;
+    object-fit: cover; 
+    border-radius: 4px;
+    flex-shrink: 0; 
+    background-color: #333; /* สีพื้นหลังเผื่อรูปไม่โหลด */
+}
+
+/* กล่องข้อมูล (ขวา) */
+.movie-details {
+    display: flex;
+    flex-direction: column; 
+    flex-grow: 1; /* ใช้พื้นที่ที่เหลือทั้งหมด */
+    min-height: 150px; /* ทำให้สูงเท่าโปสเตอร์ (ถ้าข้อมูลน้อย) */
 }
 
 .movie-info {
-    flex-grow: 1; /* ให้ข้อมูลหนังใช้พื้นที่ที่เหลือ */
+    flex-grow: 1; /* ดันให้ปุ่มอยู่ล่างสุด */
 }
 
 .movie-info h4 {
     margin: 0 0 5px 0;
     color: #E50914;
+    font-size: 1.1rem;
 }
 
 .movie-info p {
@@ -138,19 +164,22 @@ hr {
     color: #aaa;
 }
 
+/* กล่องปุ่ม (ล่าง-ขวา) */
+.movie-actions {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 5px; 
+    margin-top: 10px; /* ห่างจากข้อมูล */
+}
+
 .play-button {
-    width: auto; /* ไม่ต้องเต็ม 100% */
-    padding: 8px 16px;
-    background-color: #E50914;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 0.9rem;
-    flex-shrink: 0; /* ไม่ให้ปุ่มหดตัว */
+    width: auto; 
+    padding: 8px 12px; 
+    font-size: 0.85rem;
+    flex-shrink: 0; 
+    background-color: #444; /* สีปุ่มตอน */
 }
 
 .play-button:hover {
-    background-color: #f6121d;
+    background-color: #555;
 }
