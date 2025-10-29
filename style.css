@@ -56,149 +56,125 @@ hr { border: 0; border-top: 1px solid #E0E6ED; margin: 1.5rem 0; }
 /* --- Player (เหมือนเดิม) --- */
 #player-container { width: 100%; margin-bottom: 1rem; background-color: #000; border-radius: 8px; overflow: hidden; }
 
-/* --- (แก้) ลิสต์หนัง (Container) (เหมือนเดิม) --- */
+/* --- ลิสต์หนัง (Container & Grid) (เหมือนเดิม) --- */
 #movie-list-container { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
 h2 { font-weight: 700; color: #1A202C; margin-bottom: 0; }
 #movie-list-container > h2 { font-size: 1.5rem; font-weight: 700; color: #1A202C; margin: 0; padding-bottom: 0.5rem; border-bottom: 2px solid #3182CE; }
 .movie-grid { display: flex; overflow-x: auto; overflow-y: hidden; gap: 1.5rem; padding-bottom: 1rem; }
 
 
-/* --- (★ อัปเกรด) การ์ดหนัง (movie-item) --- */
+/* --- (★ Adjust) การ์ดหนัง (movie-item) - mimicking seriesday-hd --- */
 .movie-item {
-    background: #FFFFFF;
+    background: #252525; /* Dark background */
     border-radius: 8px;
-    border: 1px solid #E0E6ED;
+    border: 1px solid #464646; /* Darker border */
     transition: all 0.2s ease;
     display: flex; 
     flex-direction: column; 
     overflow: hidden; 
     
-    position: relative; /* ★ สำคัญมากสำหรับ Badges และ Overlay */
+    position: relative; 
     width: 180px;     
     flex-shrink: 0;   
 }
 .movie-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+    border-color: #f17aff; /* Purple border on hover (like seriesday) */
 }
-.movie-item:hover .movie-poster {
-    transform: scale(1.05); 
+
+/* (★ New) Link covering the card */
+.movie-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Make link fill the card */
+    cursor: pointer; /* Add pointer cursor */
 }
-.movie-item:hover .movie-details-overlay {
-    opacity: 1; /* ★ แสดง Overlay เมื่อ Hover */
-    transform: translateY(0);
+
+/* (★ New) Image container (for positioning badges) */
+.box-img {
+    position: relative; /* Allows badges to overlay */
+    width: 100%; 
+    height: 270px; 
+    overflow: hidden; /* Hide poster overflow on zoom */
 }
 
 .movie-poster {
     width: 100%; 
-    height: 270px; 
+    height: 100%; /* Fill the container */
     object-fit: cover; 
-    flex-shrink: 0; 
-    background-color: #EDF2F7; 
+    background-color: #363636; /* Placeholder color */
     transition: transform 0.3s ease;
 }
-
-/* --- (★ ใหม่) Badges บนการ์ด --- */
-.badge {
-    position: absolute;
-    top: 8px;
-    z-index: 2;
-    padding: 4px 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    border-radius: 4px;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-.badge-premium {
-    left: 8px;
-    background: #3182CE; /* 👑 */
-}
-.badge-hd {
-    right: 8px;
-    background: rgba(0, 0, 0, 0.6); /* HD */
-    border: 1px solid rgba(255, 255, 255, 0.5);
-}
-.badge-rating {
-    top: 34px; /* อยู่ใต้ HD */
-    right: 8px;
-    background: #E53E3E; /* ⭐ */
+.movie-item:hover .movie-poster {
+    transform: scale(1.05); /* Zoom effect */
 }
 
 
-/* --- (★ อัปเกรด) Overlay --- */
-.movie-details-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    
-    background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
-    padding: 1rem; 
-    
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    
+/* --- (★ New) Text box below image (like seriesday's .p-box) --- */
+.p-box {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* ★ ดันเนื้อหาลงล่าง */
-    height: 100%; /* ★ ให้เต็มความสูงการ์ด */
-    box-sizing: border-box;
+    flex-grow: 1; /* Fill remaining space */
 }
-
-.movie-details-overlay h4 {
-    margin: 0 0 4px 0; 
-    color: #FFFFFF; 
-    font-size: 1.1rem; 
-    font-weight: 700;
-    white-space: nowrap;
+.p1 { /* Type (Dub/Sub or Genre) */
+    background: #464646; /* Gray background */
+    color: #ccc; /* Light gray text */
+    font-size: 12px;
+    text-align: center;
+    padding: 4px 0;
+}
+.p2 { /* Title */
+    background: #252525; /* Dark background matching card */
+    color: #fff; /* White text */
+    font-size: 14px;
+    text-align: center;
+    padding: 8px 5px;
+    flex-grow: 1; /* Fill height */
+    
+    /* Ellipsis for long titles (2 lines max) */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
     overflow: hidden;
     text-overflow: ellipsis;
-}
-.movie-details-overlay p.desc {
-    margin: 0 0 0.5rem 0;
-    font-size: 0.8rem; 
-    color: #A0AEC0; /* สีเทาอ่อน */
-    line-height: 1.3;
-}
-.overlay-ep-info {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #3182CE; /* สีฟ้า */
+    line-height: 1.3; 
+    min-height: 36px; /* Prevents layout shifts */
 }
 
-/* --- (★ ใหม่) ปุ่มบน Overlay --- */
-.overlay-buttons {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 0.5rem;
-}
-.btn-overlay {
-    width: auto;
-    padding: 6px 10px;
-    font-size: 0.85rem;
+/* --- (★ New) Badges (overlaying the image) --- */
+.badge {
+    position: absolute;
+    z-index: 2;
+    padding: 3px 6px;
+    font-size: 0.75rem; /* 12px */
     font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    border: none;
-    flex-grow: 1; /* ทำให้ปุ่มขยายเต็ม */
-}
-.btn-overlay-play {
-    background-color: #3182CE;
+    border-radius: 4px;
     color: white;
+    background: rgba(0, 0, 0, 0.7); /* Transparent black background */
+    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
 }
-.btn-overlay-play:hover {
-    background-color: #2B6CB0;
+.badge-top-left { /* Rating */
+    top: 8px;
+    left: 8px;
+    background: #e9c164; /* Yellow for rating */
+    color: #000; /* Black text for yellow bg */
 }
-.btn-overlay-info {
-    background-color: rgba(74, 85, 104, 0.7); /* สีเทาโปร่งแสง */
-    color: white;
-    flex-grow: 0; /* ปุ่ม ⓘ ไม่ต้องขยาย */
-    padding: 6px 8px;
+.badge-top-right { /* HD */
+    top: 8px;
+    right: 8px;
+    /* Uses default transparent black bg */
 }
-.btn-overlay-info:hover {
-    background-color: rgba(42, 52, 69, 0.7);
+.badge-bottom-right { /* EP Info */
+    bottom: 8px;
+    right: 8px;
+    background: linear-gradient(to right,#9b51e0 0%,#C02425 100%); /* Gradient like seriesday EP */
+}
+.badge-bottom-left { /* Premium */
+     bottom: 8px;
+     left: 8px;
+     background: #3182CE; /* Blue for Premium */
 }
 
 
@@ -224,12 +200,12 @@ h2 { font-weight: 700; color: #1A202C; margin-bottom: 0; }
 .play-button.premium-locked { background: #EDF2F7; color: #A0AEC0; cursor: not-allowed; opacity: 0.8; }
 .play-button.premium-locked:hover { background: #EDF2F7; transform: none; }
 
-/* --- (ใหม่) CSS สำหรับ Skeleton Loader (จากครั้งก่อน) --- */
+/* --- Skeleton Loader CSS (เหมือนเดิม) --- */
 @keyframes skeleton-pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 .skeleton-title { height: 30px; width: 250px; margin-bottom: 1rem; background-color: #E0E6ED; border-radius: 6px; animation: skeleton-pulse 1.5s infinite ease-in-out; }
 .skeleton-card { width: 180px; height: 270px; flex-shrink: 0; background-color: #E0E6ED; border-radius: 8px; animation: skeleton-pulse 1.5s infinite ease-in-out; }
 
-/* --- (ใหม่) CSS สำหรับ Player Error (จากครั้งก่อน) --- */
+/* --- Player Error CSS (เหมือนเดิม) --- */
 .player-error-message { width: 100%; background: #FFF5F5; border: 1px solid #E53E3E; color: #C53030; padding: 1.5rem; text-align: center; border-radius: 8px; box-sizing: border-box; }
 .player-error-message h3 { margin: 0 0 0.5rem 0; color: #C53030; }
 .player-error-message p { margin: 0; font-size: 0.9rem; }
