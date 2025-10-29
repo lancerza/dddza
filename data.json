@@ -2,11 +2,16 @@
   {
     "title": "Death Whisperer 2",
     "year": 2024,
-    "genre": "Sci-Fi",
+    "genre": "Sci-Fi, Horror",
     "category": "หนังไทย",
     "streamUrl": "https://main.24layervhd.com/hls/s3a8e13b...",
     "isPremium": true,
-    "posterUrl": "https://raw.githubusercontent.com/lancerza/dddza/main/images/death-whisperer-2.jpg"
+    "posterUrl": "https://raw.githubusercontent.com/lancerza/dddza/main/images/death-whisperer-2.jpg",
+    
+    "rating": 7.8,
+    "isHD": true,
+    "episodeInfo": "หนังเต็มเรื่อง",
+    "description_short": "การกลับมาของเสียงปริศนาที่ทุกคนต้องเผชิญ"
   },
   {
     "title": "Sintel (Free Test)",
@@ -15,7 +20,12 @@
     "category": "การ์ตูน",
     "streamUrl": "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
     "isPremium": false,
-    "posterUrl": "https://i.imgur.com/v3s1bJm.jpg"
+    "posterUrl": "https://i.imgur.com/v3s1bJm.jpg",
+
+    "rating": 8.1,
+    "isHD": true,
+    "episodeInfo": "หนังสั้น (Test)",
+    "description_short": "การผจญภัยของหญิงสาวและลูกมังกร (Blender Open Movie)"
   },
   {
     "title": "Stranger Things (Series)",
@@ -29,7 +39,11 @@
       { "title": "ตอนที่ 2", "streamUrl": "https://vod1.stream25.com/Boots-2025-S01E02-tha.mp4.m3u8" },
       { "title": "ตอนที่ 3", "streamUrl": "https://vod1.stream25.com/Boots-2025-S01E03-tha.mp4.m3u8" },
       { "title": "ตอนที่ 4", "streamUrl": "https://vod1.stream25.com/Boots-2025-S01E04-tha.mp4.m3u8" }
-    ]
+    ],
+
+    "rating": 8.7,
+    "isHD": true,
+    "episodeInfo": "EP 1 - 4 (SS1)",
+    "description_short": "เมื่อเด็กชายคนหนึ่งหายตัวไป เมืองเล็กๆ ก็ได้ค้นพบความลับ..."
   }
 ]
-
