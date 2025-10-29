@@ -28,7 +28,7 @@
             <h2>เข้าสู่ระบบ</h2>
             <input type="email" id="login-email" placeholder="อีเมล" required>
             <input type="password" id="login-password" placeholder="รหัสผ่าน" required>
-            <button id="btn-login">ล็อกอิน</button>
+            <button id="btn-login" class="btn btn-primary">ล็อกอิน</button> {/* Added button classes */}
             <p class="error-message" id="login-error"></p>
             <a href="#" id="show-register">ยังไม่มีบัญชี? สมัครสมาชิก</a>
         </div>
@@ -37,7 +37,7 @@
             <h2>สมัครสมาชิก</h2>
             <input type="email" id="register-email" placeholder="อีเมล" required>
             <input type="password" id="register-password" placeholder="รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)" required>
-            <button id="btn-register">สมัครสมาชิก</button>
+            <button id="btn-register" class="btn btn-primary">สมัครสมาชิก</button> {/* Added button classes */}
             <p class="error-message" id="register-error"></p>
             <a href="#" id="show-login">มีบัญชีแล้ว? เข้าสู่ระบบ</a>
         </div>
@@ -48,33 +48,58 @@
         <div class="header">
             <h3>ยินดีต้อนรับ <span id="user-email"></span> <span id="premium-badge" style="display:none;">👑 PREMIUM</span></h3>
             <div class="header-actions">
-                <a href="#" id="profile-link" class="header-link"><i class="fas fa-user"></i> ข้อมูลส่วนตัว</a>
-                <button id="btn-logout"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
+                <a href="#" id="profile-link" class="btn btn-light header-link"><i class="fas fa-user"></i> ข้อมูลส่วนตัว</a>
+                <button id="btn-logout" class="btn btn-light"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
             </div>
         </div>
 
         <!-- ส่วนแสดงรายการหนัง -->
         <div id="movie-section">
-            <div class="search-container">
-                <input type="text" id="search-bar" placeholder="ค้นหาซีรี่ส์...">
+            <div class="controls-container"> {/* Container for search and filter */}
+                <div class="search-container">
+                    <input type="text" id="search-bar" placeholder="ค้นหาซีรี่ส์...">
+                </div>
+                 {/* (★ ใหม่) Genre Filter Dropdown */}
+                 <div class="filter-container">
+                     <label for="genre-filter">ประเภท:</label>
+                     <select id="genre-filter" class="genre-select">
+                         <option value="all">ทั้งหมด</option>
+                         {/* Options added by JS */}
+                     </select>
+                 </div>
             </div>
-            <div id="player-container" style="display: none;"></div>
+
+            <div id="player-container" style="display: none;">
+                 {/* (★ ใหม่) Autoplay blocked message overlay */}
+                 <div id="autoplay-blocked-msg" style="display: none;">
+                     <button id="play-anyway-btn"><i class="fas fa-play"></i> กดเพื่อเล่น</button>
+                 </div>
+            </div>
             <hr id="player-hr" style="display: none;">
-            <h2>รายชื่อหนังและซีรี่</h2>
-            <div id="movie-list-container">
-                <p>กำลังโหลด...</p>
+
+            {/* Container for rows + load more */}
+            <div id="movie-list-area">
+                <h2>รายชื่อหนังและซีรี่</h2>
+                <div id="movie-list-container">
+                    {/* Rows added by JS */}
+                    <p>กำลังโหลด...</p>
+                </div>
+                 {/* (★ ใหม่) Load More Button */}
+                 <div id="load-more-container" style="text-align: center; margin-top: 2rem; display: none;">
+                     <button id="load-more-btn" class="btn btn-primary">โหลดเพิ่มเติม</button>
+                 </div>
             </div>
         </div>
 
         <!-- ส่วน Profile -->
         <div id="profile-container" style="display: none;">
-             <button id="back-to-movies-btn" class="back-button"><i class="fas fa-arrow-left"></i> กลับ</button>
+             <button id="back-to-movies-btn" class="btn btn-light back-button"><i class="fas fa-arrow-left"></i> กลับ</button>
             <h2><i class="fas fa-user-circle"></i> ข้อมูลบัญชี</h2>
             <div id="profile-details">
                 <p><strong>อีเมล:</strong> <span id="profile-email">Loading...</span></p>
                 <p><strong>สถานะ:</strong> <span id="profile-status">Loading...</span></p>
                 <p><strong>Premium หมดอายุ:</strong> <span id="profile-expiry">Loading...</span></p>
-                <button id="change-password-btn" class="secondary-button" style="margin-top: 10px;">เปลี่ยนรหัสผ่าน</button>
+                <button id="change-password-btn" class="btn btn-secondary" style="margin-top: 10px;">เปลี่ยนรหัสผ่าน</button>
             </div>
             <hr>
             <h2><i class="fas fa-history"></i> ประวัติการรับชมล่าสุด</h2>
@@ -82,12 +107,13 @@
                 <p id="history-loading-msg">กำลังโหลดประวัติ...</p>
                  {/* History items added by JS */}
             </div>
-             <button id="clear-history-btn" class="danger-button" style="margin-right: 10px;">ล้างประวัติการดูทั้งหมด</button>
+            <div class="profile-actions">
+                 <button id="clear-history-btn" class="btn btn-danger" style="margin-right: 10px;">ล้างประวัติการดูทั้งหมด</button>
+            </div>
         </div>
-
     </div>
 
-    <!-- โครงสร้าง Modal (Pop-up) -->
+    <!-- โครงสร้าง Modal (Pop-up) สำหรับรายละเอียดหนัง -->
     <div id="modal-backdrop" class="modal-backdrop" style="display: none;">
         <div id="modal-content" class="modal-content">
             <button id="modal-close-btn" class="modal-close-btn">&times;</button>
@@ -96,6 +122,20 @@
             </div>
         </div>
     </div>
+
+    {/* (★ ใหม่) โครงสร้าง Custom Alert/Confirm Dialog */}
+    <div id="custom-dialog-backdrop" class="custom-dialog-backdrop" style="display: none;">
+        <div id="custom-dialog" class="custom-dialog">
+            <h3 id="custom-dialog-title">แจ้งเตือน</h3>
+            <p id="custom-dialog-message">ข้อความ...</p>
+            <div class="custom-dialog-actions">
+                <button id="custom-dialog-ok" class="btn btn-primary">ตกลง</button>
+                <button id="custom-dialog-confirm" class="btn btn-primary" style="display: none;">ยืนยัน</button>
+                <button id="custom-dialog-cancel" class="btn btn-light" style="display: none;">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- สคริปต์ Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
