@@ -367,7 +367,7 @@ function renderMovieRows(movies, clearPreviousRows = true) {
 
     existingRows.forEach(row => {
         // Remove the row if `clearPreviousRows` is true OR if it's not the Continue Watching row
-        if (row !== continueWatchingRow && (clearPreviousRows || row.tagName === 'H2' || row.classList.contains('movie-grid'))) {
+        if (row !== continueWatchingRow && (clearPreviousRows || row.tagName === 'H2' || row.classList.contains('movie-grid') || row.tagName === 'P')) { // Also remove potential <p> messages
              row.remove();
         }
     });
@@ -375,7 +375,7 @@ function renderMovieRows(movies, clearPreviousRows = true) {
     // Handle empty results after filtering/clearing
     if (!Array.isArray(movies) || movies.length === 0) {
         // Show "not found" only if the container is truly empty (or only has CW row)
-        if (!continueWatchingRow || movieListContainer.children.length <= 1) { // Allow for the CW row itself
+        if (!continueWatchingRow || movieListContainer.children.length <= 1){ // Allow for the CW row itself
              const noResults = document.createElement('p');
              noResults.textContent = 'ไม่พบซีรี่ส์ที่ตรงกับเงื่อนไข'; // Thai message
              // Append after CW row if it exists
@@ -493,9 +493,10 @@ function createPlayButton(buttonText, movie, streamUrl) {
     return playButton;
 }
 
-// --- Play Movie Function (Continue Watching Save Logic Adjusted) ---
+
+// --- (★ Adjust) Play Movie Function - Moved scrollIntoView & added play() call ---
 async function playMovie(videoUrl, contentId) {
-    console.log(`Attempting to play: ${contentId} from URL: ${videoUrl}`); // Log URL too
+    console.log(`Attempting to play: ${contentId} from URL: ${videoUrl}`);
     playerDiv.style.display = 'block'; playerDiv.innerHTML = ''; // Clear previous errors/player
     let savedPosition = 0; let docRef = null;
 
@@ -504,135 +505,106 @@ async function playMovie(videoUrl, contentId) {
         try {
             docRef = db.collection('users').doc(auth.currentUser.uid).collection('watchHistory').doc(contentId);
             const doc = await docRef.get();
-            if (doc.exists && typeof doc.data().position === 'number') { // Check type
+            if (doc.exists && typeof doc.data().position === 'number') {
                 savedPosition = doc.data().position;
                 const duration = typeof doc.data().duration === 'number' ? doc.data().duration : 0;
-                // Restart if watched very close to the end (e.g., last 30 seconds)
-                if(duration > 0 && savedPosition > duration - 30) {
-                     savedPosition = 0;
-                     console.log(`Watched near end, restarting.`);
-                } else if (savedPosition > 0) {
-                    console.log(`Resuming at: ${savedPosition.toFixed(2)}s`);
-                }
+                if(duration > 0 && savedPosition > duration - 30) savedPosition = 0;
+                else if (savedPosition > 0) console.log(`Resuming at: ${savedPosition.toFixed(2)}s`);
             }
-        } catch (e) { console.error("Error getting watch history:", e); }
-    } else { console.log("Cannot load watch history (not logged in or no contentId)."); }
+        } catch (e) { console.error("Error getting history:", e); }
+    } else { console.log("Cannot load history (not logged in or no contentId)."); }
 
     // --- 2. Setup Player ---
     try {
         const playerInstance = jwplayer("player-container").setup({
             file: videoUrl,
-            // You might need to dynamically set the type based on the URL extension or API info
-            // For now, assuming HLS is common
-            type: "hls",
+            type: "hls", // Assuming HLS
             width: "100%",
             aspectratio: "16:9",
-            autoplay: true, // Auto-play is crucial when clicking from modal
-            starttime: Math.max(0, savedPosition - 5) // Resume slightly before saved time
+            autoplay: true, // Keep autoplay true as the primary method
+            starttime: Math.max(0, savedPosition - 5)
         });
 
-        // Scroll into view after setup might be more reliable
+        // --- (★ Adjust) Handle 'ready' event for scrolling and forcing play ---
         playerInstance.on('ready', () => {
+             console.log("Player ready, scrolling into view and attempting play...");
+             // Scroll into view AFTER the player is ready
              playerDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+             // Try forcing play, helps with some browser autoplay policies
+             playerInstance.play(true);
+        });
+        playerInstance.on('autoplayBlocked', () => {
+             console.warn("Autoplay was blocked by the browser. User interaction might be needed.");
+             // Optionally display a message to the user asking them to click play
         });
 
 
-        // --- 3. Save Watch History ---
-        if (docRef) { // Only if user is logged in and we have a reference
-            let lastSaveTime = 0; const saveInterval = 10000; // Save every 10 seconds
-
-            // Find the full movie data once
+        // --- 3. Save Watch History (Logic remains the same) ---
+        if (docRef) {
+            let lastSaveTime = 0; const saveInterval = 10000;
             const currentMovieData = findMovieDataByContentId(contentId);
 
             playerInstance.on('time', (event) => {
                 const now = Date.now();
-                // Throttle saving
                 if (now - lastSaveTime > saveInterval) {
-                    const currentPosition = event.position;
-                    const duration = event.duration;
-
-                    // Validate position and duration, and avoid saving near start/end
+                    const currentPosition = event.position; const duration = event.duration;
                     if (duration > 0 && currentPosition > 5 && (duration - currentPosition) > 30) {
-
-                        // Prepare data object, including details for the Continue Watching row
                         const historyData = {
                             position: currentPosition,
-                            lastWatched: firebase.firestore.FieldValue.serverTimestamp(), // Use server time
+                            lastWatched: firebase.firestore.FieldValue.serverTimestamp(),
                             duration: duration,
-                            // Get details from the full movie object if found
                             title: currentMovieData?.title || movieTitleFromContentId(contentId),
                             posterUrl: currentMovieData?.posterUrl || null,
                             genre: currentMovieData?.genre || null,
                             isHD: currentMovieData?.isHD || false,
                             rating: currentMovieData?.rating || 0,
                             isPremium: currentMovieData?.isPremium || false,
-                            // Determine episode info based on whether it's a series
                             episodeInfo: currentMovieData?.episodes ? findEpisodeInfo(contentId, currentMovieData) : (currentMovieData?.episodeInfo || null)
                         };
-
-                        // Remove null/undefined properties before saving to Firestore
                         Object.keys(historyData).forEach(key => (historyData[key] == null) && delete historyData[key]);
-
-                        // Save/update the document in Firestore
-                        docRef.set(historyData, { merge: true }) // merge:true updates fields without overwriting the whole doc
-                           .catch(err => console.error("Error saving watch history:", err));
-
-                        lastSaveTime = now; // Update last save time
+                        docRef.set(historyData, { merge: true })
+                           .catch(err => console.error("Error saving history:", err));
+                        lastSaveTime = now;
                     }
                 }
             });
-
-            // Optional: Delete history entry when video completes
-             playerInstance.on('complete', () => {
+            playerInstance.on('complete', () => {
                  console.log(`Playback complete for ${contentId}, deleting history.`);
-                 docRef.delete().catch(err => console.error("Error deleting history on complete:", err));
+                 docRef.delete().catch(err => console.error("Error deleting history:", err));
              });
         }
 
-        // --- 4. Handle Player Errors ---
+        // --- 4. Handle Errors (Logic remains the same) ---
         playerInstance.on('error', (event) => {
             console.error(`JW Player Error (${event.code}): ${event.message}`, event);
-            // Display user-friendly error in the player div
-            playerDiv.innerHTML = `
-                <div class="player-error-message">
-                    <h3>เกิดข้อผิดพลาด (${event.code})</h3>
-                    <p>ขออภัย ไม่สามารถเล่นวิดีโอนี้ได้ อาจเกิดจากปัญหาลิงก์หมดอายุ, การเชื่อมต่อ, หรือไฟล์เสียหาย</p>
-                    <p style="font-size: 0.8em; color: #718096;">(${event.message})</p>
-                </div>`; // Thai error message
-            playerDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll error into view
+            playerDiv.innerHTML = `<div class="player-error-message"><h3>เกิดข้อผิดพลาด (${event.code})</h3><p>ขออภัย ไม่สามารถเล่นวิดีโอนี้ได้ อาจเกิดจากปัญหาลิงก์หมดอายุ, การเชื่อมต่อ, หรือไฟล์เสียหาย</p><p style="font-size: 0.8em; color: #718096;">(${event.message})</p></div>`; // Thai
+            playerDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
-
     } catch (e) {
-        // Catch errors during player setup itself (e.g., library not loaded)
-        console.error("Error setting up JW Player:", e);
-        playerDiv.innerHTML = `<p style="color:red; padding:1rem;">เกิดข้อผิดพลาดร้ายแรงในการโหลด JW Player</p>`; // Thai error
+        console.error("Error setting up Player:", e);
+        playerDiv.innerHTML = `<p style="color:red; padding:1rem;">เกิดข้อผิดพลาดร้ายแรงในการโหลด JW Player</p>`; // Thai
         playerDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
 
-// --- Helper functions for watch history ---
-// Extracts base movie title from contentId (e.g., "Movie Title | Ep 1" -> "Movie Title")
+
+// --- Helper functions (เหมือนเดิม - No changes needed here) ---
 function movieTitleFromContentId(contentId) {
-    if (!contentId) return 'Unknown Title'; // Thai fallback? 'เรื่องไม่ทราบชื่อ'
+    if (!contentId) return 'Unknown Title';
     return contentId.includes(' | ') ? contentId.split(' | ')[0].trim() : contentId.trim();
 }
 
-// Finds the full movie object in allMovies based on contentId's base title
 function findMovieDataByContentId(contentId) {
     if (!contentId || !Array.isArray(allMovies)) return null;
     const title = movieTitleFromContentId(contentId);
     return allMovies.find(m => m.title === title) || null;
 }
 
-// Extracts the specific episode title from contentId if it's a series format
 function findEpisodeInfo(contentId, movieData) {
-    // Check if it's likely an episode ID and movie data has episodes
     if (!contentId || !movieData || !movieData.episodes || !contentId.includes(' | ')) {
-        // If not episode format, return the general episode info stored in the movie data (e.g., "จบแล้ว")
         return movieData?.episodeInfo || null;
     }
     const parts = contentId.split(' | ');
-    // Return the part after " | ", which should be the episode title
     const episodeTitle = parts.length > 1 ? parts[1].trim() : null;
     return episodeTitle;
 }
