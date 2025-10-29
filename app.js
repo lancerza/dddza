@@ -29,16 +29,35 @@ const registerEmail = document.getElementById('register-email');
 const registerPassword = document.getElementById('register-password');
 const btnRegister = document.getElementById('btn-register');
 const registerError = document.getElementById('register-error');
+
 const appContainer = document.getElementById('app-container');
 const userEmailDisplay = document.getElementById('user-email');
 const btnLogout = document.getElementById('btn-logout');
-const movieListContainer = document.getElementById('movie-list-container');
-const playerDiv = document.getElementById('player-container');
 const premiumBadge = document.getElementById('premium-badge');
+
+const movieSection = document.getElementById('movie-section'); // Container for search, player, list
+const searchContainer = document.querySelector('.search-container');
 const searchBar = document.getElementById('search-bar');
+const playerDiv = document.getElementById('player-container');
+const playerHr = document.getElementById('player-hr'); // HR after player
+const movieListContainer = document.getElementById('movie-list-container');
+
 const modalBackdrop = document.getElementById('modal-backdrop');
 const modalBody = document.getElementById('modal-body');
 const modalCloseBtn = document.getElementById('modal-close-btn');
+
+// (★ ใหม่) Profile Page Elements
+const profileLink = document.getElementById('profile-link');
+const profileContainer = document.getElementById('profile-container');
+const backToMoviesBtn = document.getElementById('back-to-movies-btn');
+const profileEmail = document.getElementById('profile-email');
+const profileStatus = document.getElementById('profile-status');
+const profileExpiry = document.getElementById('profile-expiry');
+const changePasswordBtn = document.getElementById('change-password-btn');
+const profileWatchHistory = document.getElementById('profile-watch-history');
+const historyLoadingMsg = document.getElementById('history-loading-msg');
+const clearHistoryBtn = document.getElementById('clear-history-btn');
+
 
 // --- Global Variables ---
 let allMovies = [];
@@ -56,14 +75,14 @@ btnRegister.addEventListener('click', (e) => {
     auth.createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
             console.log('Registered successfully:', userCredential.user.uid);
-            const newUserProfile = { email: email, isPremium: false };
+            const newUserProfile = { email: email, isPremium: false, createdAt: firebase.firestore.FieldValue.serverTimestamp() }; // Add createdAt
             db.collection('users').doc(userCredential.user.uid).set(newUserProfile)
                 .then(() => console.log("User profile created"))
                 .catch(err => console.error("Error creating profile:", err));
         })
         .catch((error) => {
             console.error('Registration failed:', error.message);
-            registerError.textContent = `สมัครสมาชิกล้มเหลว: ${error.message}`; // Thai error message
+            registerError.textContent = `สมัครสมาชิกล้มเหลว: ${getFirebaseAuthErrorMessage(error)}`; // Use helper for better messages
             registerError.style.display = 'block';
         });
 });
@@ -79,7 +98,7 @@ btnLogin.addEventListener('click', (e) => {
         })
         .catch((error) => {
             console.error('Login failed:', error.message);
-            loginError.textContent = `ล็อกอินล้มเหลว: ${error.message}`; // Thai error message
+            loginError.textContent = `ล็อกอินล้มเหลว: ${getFirebaseAuthErrorMessage(error)}`; // Use helper
             loginError.style.display = 'block';
         });
 });
@@ -95,6 +114,7 @@ btnLogout.addEventListener('click', (e) => {
             }
         } catch(e) { console.warn("Could not remove player:", e.message); }
         playerDiv.style.display = 'none';
+        playerHr.style.display = 'none'; // Hide HR too
         playerDiv.innerHTML = '';
     });
 });
@@ -146,23 +166,23 @@ auth.onAuthStateChanged((user) => {
                     currentUserProfile = doc.data();
                     console.log("Profile loaded:", currentUserProfile);
                 } else {
-                    // Create profile if it doesn't exist (should normally be created on signup)
-                    currentUserProfile = { email: user.email, isPremium: false };
+                    // Create profile if it doesn't exist
+                    currentUserProfile = { email: user.email, isPremium: false, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
                     db.collection('users').doc(user.uid).set(currentUserProfile);
                     console.log('Profile created (fallback)');
                 }
                 // Update UI for signed-in state
                 authContainer.style.display = 'none';
                 appContainer.style.display = 'block';
-                userEmailDisplay.textContent = currentUserProfile.email || user.email; // Display email
-                premiumBadge.style.display = currentUserProfile.isPremium ? 'inline-block' : 'none'; // Show premium badge if applicable
+                showMovieSection(); // Show movie section by default
+                userEmailDisplay.textContent = currentUserProfile.email || user.email;
+                premiumBadge.style.display = currentUserProfile.isPremium ? 'inline-block' : 'none';
 
                 // Fetch "Continue Watching" first, then other movies
                 fetchAndRenderContinueWatching().then(() => {
                     if (allMovies.length === 0) {
-                        fetchMovies(); // Fetch all movies if not already loaded
+                        fetchMovies();
                     } else {
-                        // If movies already loaded, render regular rows (clearing previous ones)
                         renderMovieRows(allMovies);
                     }
                 });
@@ -175,7 +195,8 @@ auth.onAuthStateChanged((user) => {
                 premiumBadge.style.display = 'none';
                 authContainer.style.display = 'none';
                 appContainer.style.display = 'block';
-                 // Still try to fetch content even if profile load failed
+                showMovieSection();
+                 // Still try to fetch content
                  fetchAndRenderContinueWatching().then(() => {
                      if (allMovies.length === 0) { fetchMovies(); }
                  });
@@ -185,19 +206,45 @@ auth.onAuthStateChanged((user) => {
         console.log('User signed out');
         // Reset state and UI
         currentUserProfile = null;
-        allMovies = []; // Clear movie data
-        authContainer.style.display = 'block'; // Show login/register forms
-        appContainer.style.display = 'none'; // Hide main app content
+        allMovies = [];
+        authContainer.style.display = 'block';
+        appContainer.style.display = 'none';
         premiumBadge.style.display = 'none';
-        movieListContainer.innerHTML = ''; // Clear movie list (including continue watching)
-        // Clear potential error messages and reset forms
+        movieListContainer.innerHTML = '';
+        profileContainer.style.display = 'none'; // Ensure profile is hidden
+        movieSection.style.display = 'none'; // Ensure movie section is hidden
+        // Clear errors and reset forms
         loginError.style.display = 'none';
         registerError.style.display = 'none';
         loginForm.reset();
         registerForm.reset();
-        searchBar.value = ''; // Clear search bar
+        searchBar.value = '';
     }
 });
+
+// --- (★ ใหม่) Navigation between Movie List and Profile ---
+profileLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    showProfileSection();
+    loadProfileData(); // Load data when showing
+});
+
+backToMoviesBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    showMovieSection();
+});
+
+function showMovieSection() {
+    profileContainer.style.display = 'none';
+    movieSection.style.display = 'block';
+     // Re-fetch continue watching in case something was watched
+     if(auth.currentUser) fetchAndRenderContinueWatching();
+}
+
+function showProfileSection() {
+    movieSection.style.display = 'none';
+    profileContainer.style.display = 'block';
+}
 
 
 // --- Fetch Movie Data ---
@@ -358,38 +405,33 @@ async function fetchAndRenderContinueWatching() {
 
 
 // --- Render Movie Rows (Adjusted to handle Continue Watching row) ---
-// Added `clearPreviousRows` flag: if false (like during search), it won't remove the Continue Watching row.
 function renderMovieRows(movies, clearPreviousRows = true) {
     const continueWatchingRow = document.getElementById('continue-watching-row'); // Reference to the CW row
 
-    // Select all direct children rows/elements in the container
-    const existingRows = Array.from(movieListContainer.children);
+    // Select all direct children rows/elements in the container EXCEPT the continue watching row
+    const rowsToRemove = Array.from(movieListContainer.children).filter(el => el !== continueWatchingRow);
 
-    existingRows.forEach(row => {
-        // Remove the row if `clearPreviousRows` is true OR if it's not the Continue Watching row
-        if (row !== continueWatchingRow && (clearPreviousRows || row.tagName === 'H2' || row.classList.contains('movie-grid') || row.tagName === 'P')) { // Also remove potential <p> messages
-             row.remove();
-        }
-    });
+    // Remove them if needed
+    if (clearPreviousRows) {
+        rowsToRemove.forEach(row => row.remove());
+    } else {
+        // If not clearing all (e.g., during search), only remove rows added by this function (H2, .movie-grid, p)
+        rowsToRemove.filter(row => row.tagName === 'H2' || row.classList.contains('movie-grid') || row.tagName === 'P')
+                    .forEach(row => row.remove());
+    }
 
     // Handle empty results after filtering/clearing
     if (!Array.isArray(movies) || movies.length === 0) {
         // Show "not found" only if the container is truly empty (or only has CW row)
-        if (!continueWatchingRow || movieListContainer.children.length <= 1){ // Allow for the CW row itself
+        if (!continueWatchingRow || movieListContainer.children.length <= 1) { // Allow for the CW row itself
              const noResults = document.createElement('p');
              noResults.textContent = 'ไม่พบซีรี่ส์ที่ตรงกับเงื่อนไข'; // Thai message
-             // Append after CW row if it exists
-             if(continueWatchingRow && movieListContainer.children.length === 1) {
-                 movieListContainer.appendChild(noResults);
-             } else if (!continueWatchingRow) {
-                 movieListContainer.innerHTML = ''; // Clear completely if no CW row
-                 movieListContainer.appendChild(noResults);
-             }
+             movieListContainer.appendChild(noResults); // Append (will be after CW row if it exists)
         }
         return; // Exit if no movies to render
     }
 
-    // --- Grouping & Ordering (Same as before) ---
+    // --- Grouping & Ordering ---
     const moviesByCategory = movies.reduce((groups, movie) => { const category = movie.category || 'อื่นๆ'; if (!groups[category]) groups[category] = []; groups[category].push(movie); return groups; }, {});
     const preferredOrder = ['หนังไทย', 'ซีรี่ส์ฝรั่ง', 'ซีรี่ส์เกาหลี', 'การ์ตูน']; // ★ Adjust order if needed
     const otherCategories = Object.keys(moviesByCategory).filter(cat => !preferredOrder.includes(cat) && cat !== 'อื่นๆ').sort();
@@ -443,7 +485,7 @@ function renderMovieRows(movies, clearPreviousRows = true) {
 }
 
 
-// --- Open Modal Function (เหมือนเดิม - No changes needed here) ---
+// --- Open Modal Function ---
 function openModal(movie) {
     if (!movie) return;
     modalBody.innerHTML = `
@@ -472,7 +514,7 @@ function openModal(movie) {
     modalBackdrop.style.display = 'flex';
 }
 
-// --- Create Play Button (for Modal) (เหมือนเดิม - No changes needed here) ---
+// --- Create Play Button (for Modal) ---
 function createPlayButton(buttonText, movie, streamUrl) {
     const playButton = document.createElement('button'); playButton.className = 'play-button';
     const isMoviePremium = movie.isPremium || false;
@@ -497,7 +539,9 @@ function createPlayButton(buttonText, movie, streamUrl) {
 // --- (★ Adjust) Play Movie Function - Moved scrollIntoView & added play() call ---
 async function playMovie(videoUrl, contentId) {
     console.log(`Attempting to play: ${contentId} from URL: ${videoUrl}`);
-    playerDiv.style.display = 'block'; playerDiv.innerHTML = ''; // Clear previous errors/player
+    playerDiv.style.display = 'block'; // Make player visible
+    playerHr.style.display = 'block'; // Show HR above player
+    playerDiv.innerHTML = ''; // Clear previous errors/player
     let savedPosition = 0; let docRef = null;
 
     // --- 1. Load Watch History ---
@@ -508,7 +552,7 @@ async function playMovie(videoUrl, contentId) {
             if (doc.exists && typeof doc.data().position === 'number') {
                 savedPosition = doc.data().position;
                 const duration = typeof doc.data().duration === 'number' ? doc.data().duration : 0;
-                if(duration > 0 && savedPosition > duration - 30) savedPosition = 0;
+                if(duration > 0 && savedPosition > duration - 30) savedPosition = 0; // Restart if near end
                 else if (savedPosition > 0) console.log(`Resuming at: ${savedPosition.toFixed(2)}s`);
             }
         } catch (e) { console.error("Error getting history:", e); }
@@ -522,20 +566,27 @@ async function playMovie(videoUrl, contentId) {
             width: "100%",
             aspectratio: "16:9",
             autoplay: true, // Keep autoplay true as the primary method
-            starttime: Math.max(0, savedPosition - 5)
+            starttime: Math.max(0, savedPosition - 5) // Resume slightly before
         });
 
         // --- (★ Adjust) Handle 'ready' event for scrolling and forcing play ---
         playerInstance.on('ready', () => {
              console.log("Player ready, scrolling into view and attempting play...");
-             // Scroll into view AFTER the player is ready
-             playerDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-             // Try forcing play, helps with some browser autoplay policies
-             playerInstance.play(true);
+             // Scroll player DIV into view AFTER the player is ready
+             // Using 'start' to align the top of the player with the top of the viewport
+             playerDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+             // Try forcing play again, might help with some browser policies
+             // Use a small timeout to ensure scroll has initiated before playing
+             setTimeout(() => {
+                 // Check if player still exists before trying to play
+                 if(jwplayer("player-container")?.getState) {
+                     playerInstance.play(true);
+                 }
+             }, 150); // Increased timeout slightly
         });
         playerInstance.on('autoplayBlocked', () => {
              console.warn("Autoplay was blocked by the browser. User interaction might be needed.");
-             // Optionally display a message to the user asking them to click play
+             // You could display a play icon overlay here for the user to click
         });
 
 
@@ -588,7 +639,192 @@ async function playMovie(videoUrl, contentId) {
 }
 
 
-// --- Helper functions (เหมือนเดิม - No changes needed here) ---
+// --- (★ ใหม่) Load Profile Data Function ---
+async function loadProfileData() {
+    if (!currentUserProfile || !auth.currentUser) {
+        console.error("Cannot load profile data: No user logged in or profile missing.");
+        profileEmail.textContent = 'N/A';
+        profileStatus.textContent = 'N/A';
+        profileExpiry.textContent = 'N/A';
+        profileWatchHistory.innerHTML = '<p id="history-loading-msg">กรุณาเข้าสู่ระบบเพื่อดูข้อมูล</p>'; // Thai
+        return;
+    }
+
+    const userId = auth.currentUser.uid;
+
+    // --- 1. Populate Account Details ---
+    profileEmail.textContent = currentUserProfile.email || 'ไม่พบอีเมล'; // Thai
+    profileStatus.textContent = currentUserProfile.isPremium ? '👑 Premium' : 'สมาชิกทั่วไป'; // Thai
+
+    // --- 2. Populate Premium Expiry ---
+    const expirySpan = profileExpiry;
+    if (currentUserProfile.isPremium && currentUserProfile.premiumExpiry && currentUserProfile.premiumExpiry.toDate) { // Check if it's a Firestore Timestamp
+        try {
+            const expiryDate = currentUserProfile.premiumExpiry.toDate(); // Convert Timestamp to Date
+            const now = new Date();
+
+            if (expiryDate < now) {
+                // Expired
+                expirySpan.textContent = `หมดอายุแล้ว (${expiryDate.toLocaleDateString('th-TH')})`; // Thai
+                expirySpan.style.color = 'red';
+                // Optional: Automatically update isPremium to false in Firestore if expired
+                // db.collection('users').doc(userId).update({ isPremium: false });
+            } else {
+                // Still active
+                expirySpan.textContent = expiryDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }); // Thai formatting
+                expirySpan.style.color = 'green';
+            }
+        } catch (e) {
+             console.error("Error processing expiry date:", e);
+             expirySpan.textContent = 'ข้อมูลผิดพลาด'; // Thai
+             expirySpan.style.color = 'orange';
+        }
+    } else if (currentUserProfile.isPremium) {
+        expirySpan.textContent = 'ตลอดชีพ / ไม่ระบุ'; // Thai (If premium but no expiry date)
+        expirySpan.style.color = 'green';
+    } else {
+        expirySpan.textContent = 'ไม่มี'; // Thai (Not premium)
+        expirySpan.style.color = 'inherit';
+    }
+
+    // --- 3. Populate Watch History ---
+    profileWatchHistory.innerHTML = '<p id="history-loading-msg">กำลังโหลดประวัติ...</p>'; // Reset and show loading
+
+    try {
+        const historyRef = db.collection('users').doc(userId).collection('watchHistory');
+        const snapshot = await historyRef.orderBy('lastWatched', 'desc').limit(20).get(); // Get latest 20
+
+        // Clear loading message before adding items or showing empty message
+        const loadingMsgElement = profileWatchHistory.querySelector('#history-loading-msg');
+
+        if (snapshot.empty) {
+             if(loadingMsgElement) loadingMsgElement.textContent = 'ยังไม่มีประวัติการรับชม'; // Thai
+            return;
+        }
+
+         if(loadingMsgElement) loadingMsgElement.remove(); // Remove loading message
+
+        snapshot.forEach(doc => {
+            const item = { id: doc.id, ...doc.data() };
+
+            // Basic validation
+             if (!item.title || !item.lastWatched?.toDate) {
+                 console.warn("Skipping history item with missing data:", item.id);
+                 return;
+             }
+
+            const historyItemElement = document.createElement('div');
+            historyItemElement.className = 'history-item';
+            const poster = item.posterUrl || `https://placehold.co/60x90/EDF2F7/718096?text=?&font=inter`;
+            const displayTitle = item.title || 'ไม่มีชื่อเรื่อง'; // Thai
+            const lastWatchedDate = item.lastWatched.toDate();
+            // Format date and time in Thai locale
+            const formattedDate = lastWatchedDate.toLocaleString('th-TH', {
+                day: 'numeric', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+
+            historyItemElement.innerHTML = `
+                <img src="${poster}" alt="" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/60x90/E0E6ED/718096?text=?&font=inter';">
+                <div class="history-item-info">
+                    <h4>${displayTitle}</h4>
+                    ${item.episodeInfo ? `<p>${item.episodeInfo}</p>` : ''} {/* Show episode if available */}
+                    <p class="history-date">ดูเมื่อ: ${formattedDate}</p> {/* Thai */}
+                </div>
+            `;
+
+            // Make the history item clickable to open the modal
+            historyItemElement.addEventListener('click', () => {
+                const fullMovieData = findMovieDataByContentId(item.id);
+                if (fullMovieData) {
+                    // Switch back to movie view and open modal
+                    showMovieSection(); // Go back to movie list view first
+                    // Use a small timeout to ensure the section is visible before opening modal
+                    setTimeout(() => openModal(fullMovieData), 50);
+                } else {
+                    alert(`ขออภัย ไม่พบข้อมูลสำหรับ "${item.title}" ในรายการปัจจุบัน`); // Thai
+                }
+            });
+
+            profileWatchHistory.appendChild(historyItemElement);
+        });
+
+    } catch (error) {
+        console.error("Error fetching profile watch history:", error);
+        const loadingMsgElement = profileWatchHistory.querySelector('#history-loading-msg');
+        if(loadingMsgElement) {
+            loadingMsgElement.textContent = 'เกิดข้อผิดพลาดในการโหลดประวัติ'; // Thai
+            loadingMsgElement.style.color = 'red';
+        } else {
+             profileWatchHistory.innerHTML = '<p style="color:red;">เกิดข้อผิดพลาดในการโหลดประวัติ</p>'; // Fallback error display
+        }
+    }
+}
+
+// --- (★ ใหม่) Change Password Function ---
+changePasswordBtn.addEventListener('click', () => {
+    if (!currentUserProfile || !currentUserProfile.email) {
+        // Use a more user-friendly message display instead of alert if possible
+        alert('ไม่พบข้อมูลอีเมลสำหรับส่งลิงก์รีเซ็ตรหัสผ่าน'); // Thai
+        return;
+    }
+    const email = currentUserProfile.email;
+    auth.sendPasswordResetEmail(email)
+        .then(() => {
+            alert(`ลิงก์สำหรับรีเซ็ตรหัสผ่านถูกส่งไปยัง ${email} แล้ว กรุณาตรวจสอบอีเมลของคุณ (รวมถึงโฟลเดอร์สแปม)`); // Thai, added spam folder note
+        })
+        .catch((error) => {
+            console.error("Error sending password reset email:", error);
+            alert(`เกิดข้อผิดพลาดในการส่งอีเมลรีเซ็ต: ${getFirebaseAuthErrorMessage(error)}`); // Thai, use helper
+        });
+});
+
+// --- (★ ใหม่) Clear Watch History Function ---
+clearHistoryBtn.addEventListener('click', async () => {
+    if (!auth.currentUser) return;
+
+    // Replace prompt with a more robust confirmation mechanism in a real app
+     if (prompt("คุณแน่ใจหรือไม่ว่าต้องการล้างประวัติการดูทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้ กรุณาพิมพ์ 'ยืนยัน' เพื่อดำเนินการ:") !== 'ยืนยัน') { // Thai prompt, changed confirmation word
+         console.log("History clear cancelled by user.");
+         return;
+     }
+
+    const userId = auth.currentUser.uid;
+    const historyRef = db.collection('users').doc(userId).collection('watchHistory');
+    clearHistoryBtn.textContent = 'กำลังล้าง...'; // Thai
+    clearHistoryBtn.disabled = true;
+
+    try {
+        // Loop to delete in batches until empty
+        let deletedCount = 0;
+        let snapshot;
+        do {
+            snapshot = await historyRef.limit(100).get(); // Delete in batches of 100
+            if (!snapshot.empty) {
+                const batch = db.batch();
+                snapshot.docs.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+                deletedCount += snapshot.size;
+                console.log(`Deleted ${snapshot.size} history items...`);
+            }
+        } while (!snapshot.empty); // Continue until no more documents found
+
+        console.log(`Total deleted: ${deletedCount}`);
+        alert('ล้างประวัติการดูทั้งหมดสำเร็จ'); // Thai
+        loadProfileData(); // Reload profile to show empty list immediately
+
+    } catch (error) {
+        console.error("Error clearing watch history:", error);
+        alert(`เกิดข้อผิดพลาดในการล้างประวัติ: ${error.message}`); // Thai
+    } finally {
+        // Re-enable button regardless of success/failure
+        clearHistoryBtn.textContent = 'ล้างประวัติการดูทั้งหมด'; // Thai
+        clearHistoryBtn.disabled = false;
+    }
+});
+
+
+// --- Helper functions ---
 function movieTitleFromContentId(contentId) {
     if (!contentId) return 'Unknown Title';
     return contentId.includes(' | ') ? contentId.split(' | ')[0].trim() : contentId.trim();
@@ -607,5 +843,22 @@ function findEpisodeInfo(contentId, movieData) {
     const parts = contentId.split(' | ');
     const episodeTitle = parts.length > 1 ? parts[1].trim() : null;
     return episodeTitle;
+}
+
+// Helper to provide more user-friendly Firebase Auth error messages (in Thai)
+function getFirebaseAuthErrorMessage(error) {
+    switch (error.code) {
+        case 'auth/invalid-email': return 'รูปแบบอีเมลไม่ถูกต้อง';
+        case 'auth/user-disabled': return 'บัญชีผู้ใช้นี้ถูกปิดใช้งาน';
+        case 'auth/user-not-found': return 'ไม่พบบัญชีผู้ใช้ที่ตรงกับอีเมลนี้';
+        case 'auth/wrong-password': return 'รหัสผ่านไม่ถูกต้อง';
+        case 'auth/email-already-in-use': return 'อีเมลนี้ถูกใช้งานแล้วโดยบัญชีอื่น';
+        case 'auth/weak-password': return 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+        case 'auth/operation-not-allowed': return 'การเข้าสู่ระบบด้วยอีเมล/รหัสผ่านไม่ได้เปิดใช้งาน';
+        case 'auth/network-request-failed': return 'เกิดปัญหาในการเชื่อมต่อเครือข่าย กรุณาลองใหม่อีกครั้ง';
+        case 'auth/too-many-requests': return 'มีการร้องขอมากเกินไป ลองใหม่อีกครั้งภายหลัง'; // Added common error
+        case 'auth/requires-recent-login': return 'การดำเนินการนี้ต้องมีการเข้าสู่ระบบใหม่ กรุณาออกจากระบบแล้วเข้าสู่ระบบอีกครั้ง'; // Added common error
+        default: return error.message; // Fallback to default message
+    }
 }
 
