@@ -163,12 +163,11 @@ hr {
 }
 
 /* --- (แก้) ลิสต์หนัง (Container) --- */
-/* (ลบ display: grid ออกจาก #movie-list-container) */
 #movie-list-container {
     margin-top: 1.5rem;
-    display: flex; /* (ใหม่) */
-    flex-direction: column; /* (ใหม่) */
-    gap: 1.5rem; /* (ใหม่) ระยะห่างระหว่างแถว */
+    display: flex; 
+    flex-direction: column; 
+    gap: 1.5rem; /* ระยะห่างระหว่างแถว */
 }
 /* (แก้) H2 ที่เป็นชื่อเรื่องหลัก */
 h2 {
@@ -186,15 +185,17 @@ h2 {
     border-bottom: 2px solid #3182CE;
 }
 
-/* (ใหม่) Grid สำหรับแต่ละแถวหมวดหมู่ */
+/* (แก้) Grid สำหรับแต่ละแถวหมวดหมู่ (เป็น Flex แนวนอน) */
 .movie-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    display: flex;       /* เปลี่ยนจาก grid */
+    overflow-x: auto;  /* ★ ทำให้เลื่อนแนวนอนได้ */
+    overflow-y: hidden;  /* ซ่อน scrollbar แนวตั้ง */
     gap: 1.5rem;
+    padding-bottom: 1rem; /* เพิ่มที่ว่างให้ scrollbar */
 }
 
 
-/* --- การ์ดหนัง (movie-item) (เหมือนเดิม) --- */
+/* --- (แก้) การ์ดหนัง (movie-item) (ปรับปรุง) --- */
 .movie-item {
     background: #FFFFFF;
     border-radius: 8px;
@@ -204,10 +205,32 @@ h2 {
     flex-direction: column; 
     overflow: hidden; 
     cursor: pointer; 
+    
+    /* (ใหม่) เพิ่ม 3 บรรทัดนี้ */
+    position: relative; /* ★ เพื่อให้ป้ายและ overlay ลอยทับได้ */
+    width: 180px;     /* ★ กำหนดความกว้างคงที่ */
+    flex-shrink: 0;   /* ★ ไม่ให้การ์ดหดตัว */
 }
 .movie-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+.movie-item:hover .movie-poster {
+    transform: scale(1.05); /* (ใหม่) ซูมรูปเล็กน้อยตอน hover */
+}
+
+/* (ใหม่) ป้าย Premium บนการ์ด */
+.card-premium-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #3182CE;
+    color: white;
+    font-size: 0.8rem;
+    padding: 4px 6px;
+    border-radius: 6px;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .movie-poster {
@@ -217,20 +240,41 @@ h2 {
     flex-shrink: 0; 
     background-color: #EDF2F7; 
     border-bottom: 1px solid #E0E6ED;
+    transition: transform 0.3s ease; /* (ใหม่) เพิ่ม transition */
 }
 
+/* (แก้) movie-details (ปรับเป็น Overlay) */
 .movie-details {
     display: flex;
     flex-direction: column; 
-    flex-grow: 1; 
-    padding: 1rem; 
+
+    /* (แก้) ทำให้เป็น Overlay */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    /* ไล่สีจางๆ ไปทึบ */
+    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+    padding: 2.5rem 1rem 1rem 1rem; /* เพิ่ม padding ด้านบนให้ไล่สี */
+    
+    /* (แก้) ซ่อนไว้ก่อน */
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
 }
+
+.movie-item:hover .movie-details {
+    opacity: 1; /* (ใหม่) แสดงผลเมื่อ Hover */
+    transform: translateY(0);
+}
+
 .movie-info {
     flex-grow: 1; 
 }
 .movie-info h4 {
     margin: 0 0 4px 0; 
-    color: #1A202C;
+    color: #FFFFFF; /* (แก้) สีขาวสำหรับ Overlay */
     font-size: 1.1rem; 
     font-weight: 700;
     white-space: nowrap;
@@ -240,7 +284,7 @@ h2 {
 .movie-info p {
     margin: 0;
     font-size: 0.85rem; 
-    color: #718096;
+    color: #E0E6ED; /* (แก้) สีเทาอ่อนสำหรับ Overlay */
 }
 
 .movie-actions {
@@ -376,4 +420,3 @@ h2 {
     background: #EDF2F7;
     transform: none;
 }
-
