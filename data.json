@@ -23,8 +23,8 @@
     "posterUrl": "https://bbk100.xyz/media/cache/resolve/strip/202510/movie/ef3e9f8da460307e63c013d5f3264462.jpg",
     "episodes": [
       { "title": "ตอนที่ 1", "streamUrl": "https://vod1.stream25.com/Boots-2025-S01E01-tha.mp4.m3u8" },
-      { "title": "ตอนที่ 2", "streamUrl": "https://vod1.stream25.com/Boots-2025-S01E02-tha.mp4.m3u8" }
-      { "title": "ตอนที่ 3", "streamUrl": "https://vod1.stream25.com/Boots-2025-S01E03-tha.mp4.m3u8" }
+      { "title": "ตอนที่ 2", "streamUrl": "https://vod1.stream25.com/Boots-2025-S01E02-tha.mp4.m3u8" },
+      { "title": "ตอนที่ 3", "streamUrl": "https://vod1.stream25.com/Boots-2025-S01E03-tha.mp4.m3u8" },
       { "title": "ตอนที่ 4", "streamUrl": "https://vod1.stream25.com/Boots-2025-S01E04-tha.mp4.m3u8" }
     ]
   }
