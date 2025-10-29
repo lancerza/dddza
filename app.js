@@ -184,7 +184,7 @@ function fetchMovies() {
         });
 }
 
-// --- (ใหม่!) ฟังก์ชันสำหรับแสดงผลแบบ "แถว" (Rows) ---
+// --- (★ แก้ไข) ฟังก์ชันสำหรับแสดงผลแบบ "แถว" (Rows) (อัปเกรดแล้ว) ---
 function renderMovieRows(movies) {
     movieListContainer.innerHTML = ''; // เคลียร์ของเก่า
     
@@ -203,27 +203,49 @@ function renderMovieRows(movies) {
         return groups;
     }, {});
 
-    // --- 2. วนลูปเพื่อสร้างแต่ละแถว ---
-    // (จัดลำดับ 'ซีรี่ส์ไทย' 'ซีรี่ส์ฝรั่ง' ฯลฯ ถ้าต้องการ)
-    const categoryOrder = ['หนังไทย', 'ซีรี่ส์ฝรั่ง', 'การ์ตูน', 'อื่นๆ'];
+    // --- 2. (แก้) จัดลำดับการแสดงผลแบบไดนามิก ---
+    const preferredOrder = ['หนังไทย', 'ซีรี่ส์ฝรั่ง', 'การ์ตูน'];
     
-    categoryOrder.forEach(category => {
+    // ดึงหมวดหมู่อื่นๆ ที่เหลือทั้งหมด (ยกเว้น 'อื่นๆ')
+    const otherCategories = Object.keys(moviesByCategory)
+        .filter(category => !preferredOrder.includes(category) && category !== 'อื่นๆ')
+        .sort(); // เรียงตามตัวอักษร
+
+    // รวมลำดับทั้งหมด โดยให้ 'อื่นๆ' อยู่ท้ายสุดเสมอ
+    const finalOrder = [...preferredOrder, ...otherCategories];
+    
+    // ถ้ามี 'อื่นๆ' ให้นำไปต่อท้าย
+    if (moviesByCategory['อื่นๆ']) {
+        finalOrder.push('อื่นๆ');
+    }
+    
+    // --- 3. วนลูปด้วยลำดับใหม่นี้เพื่อสร้างแต่ละแถว ---
+    finalOrder.forEach(category => {
         const moviesInCategory = moviesByCategory[category];
         
         if (moviesInCategory && moviesInCategory.length > 0) {
-            // --- 3. สร้าง H2 (ชื่อหมวดหมู่) ---
+            // --- 4. สร้าง H2 (ชื่อหมวดหมู่) ---
             const categoryTitle = document.createElement('h2');
             categoryTitle.textContent = category;
             movieListContainer.appendChild(categoryTitle);
 
-            // --- 4. สร้าง Grid สำหรับแถวนี้ ---
+            // --- 5. สร้าง Grid (แถวแนวนอน) สำหรับแถวนี้ ---
             const movieGrid = document.createElement('div');
-            movieGrid.className = 'movie-grid'; // (ใช้ class ใหม่)
+            movieGrid.className = 'movie-grid'; // (ใช้ class ใหม่จาก CSS)
             
-            // --- 5. วนลูปสร้างการ์ดหนังในแถวนี้ ---
+            // --- 6. วนลูปสร้างการ์ดหนังในแถวนี้ ---
             moviesInCategory.forEach((movie) => {
                 const movieElement = document.createElement('div');
                 movieElement.className = 'movie-item';
+
+                // ▼▼▼ (ใหม่!) เพิ่มป้าย Premium (👑) ▼▼▼
+                if (movie.isPremium) {
+                    const premiumBadge = document.createElement('div');
+                    premiumBadge.className = 'card-premium-badge';
+                    premiumBadge.textContent = '👑';
+                    movieElement.appendChild(premiumBadge);
+                }
+                // ▲▲▲ (ใหม่!) จบส่วนป้าย Premium ▲▲▲
                 
                 movieElement.addEventListener('click', () => {
                     openModal(movie); 
@@ -252,13 +274,14 @@ function renderMovieRows(movies) {
                 movieElement.appendChild(movieDetails);    
                 movieDetails.appendChild(movieInfo);     
                 
-                movieGrid.appendChild(movieElement); // (แก้) เพิ่มใน grid ของแถว
+                movieGrid.appendChild(movieElement); // เพิ่มใน grid ของแถว
             });
             
             movieListContainer.appendChild(movieGrid); // เพิ่ม grid ของแถว
         }
     });
 }
+
 
 // --- ฟังก์ชัน Modal (openModal) (เหมือนเดิม) ---
 function openModal(movie) {
@@ -270,8 +293,7 @@ function openModal(movie) {
                 <p>${movie.genre || 'N/A'} (ปี ${movie.year || 'N/A'})</p>
                 <h3 class="modal-episodes-title" id="modal-title-type"></h3>
                 <div class="modal-episodes-list" id="modal-episodes">
-                    <!-- ปุ่มตอนจะถูกเพิ่มที่นี่ -->
-                </div>
+                    </div>
             </div>
         </div>
     `;
@@ -354,4 +376,3 @@ function playMovie(videoUrl) {
         playerDiv.innerHTML = `<p style="color:red; padding:1rem;">เกิดข้อผิดพลาดในการโหลด JW Player</p>`;
     }
 }
-
