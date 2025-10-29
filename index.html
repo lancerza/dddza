@@ -4,14 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เว็บหนังซีรี่ (FLOWTV)</title>
+    
+    <!-- ▼▼▼ (ใหม่) โหลดฟอนต์ Inter ▼▼▼ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
     
+    <!-- สคริปต์ JW PLAYER -->
     <script src="//content.jwplatform.com/libraries/SAHhwvZq.js"></script>
 
 </head>
 <body>
 
+    <!-- (ส่วน Auth Container เหมือนเดิม) -->
     <div id="auth-container">
+        <!-- ... (โค้ดฟอร์มล็อกอิน/สมัครสมาชิก) ... -->
         <div id="login-form" class="form-container">
             <h2>เข้าสู่ระบบ</h2>
             <input type="email" id="login-email" placeholder="อีเมล" required>
@@ -20,7 +29,6 @@
             <p class="error-message" id="login-error"></p>
             <a href="#" id="show-register">ยังไม่มีบัญชี? สมัครสมาชิก</a>
         </div>
-
         <div id="register-form" class="form-container" style="display: none;">
             <h2>สมัครสมาชิก</h2>
             <input type="email" id="register-email" placeholder="อีเมล" required>
@@ -31,13 +39,16 @@
         </div>
     </div>
 
+    <!-- ส่วนสำหรับผู้ที่ล็อกอินแล้ว -->
     <div id="app-container" style="display: none;">
-        <div class="header">
-            <h3>ยินดีต้อนรับ <span id="user-email"></span>!</h3>
+        <div class="header"> <!-- (แก้) class พิมพ์เล็ก -->
+            <!-- ▼▼▼ (ใหม่) เพิ่มป้าย PREMIUM BADGE ▼▼▼ -->
+            <h3>ยินดีต้อนรับ <span id="user-email"></span> <span id="premium-badge" style="display:none;">👑 PREMIUM</span></h3>
             <button id="btn-logout">ออกจากระบบ</button>
         </div>
         
-        <div id="player-container"></div>
+        <!-- ▼▼▼ (ใหม่) ซ่อน Player ไว้ก่อน ▼▼▼ -->
+        <div id="player-container" style="display: none;"></div>
         <hr>
         
         <h2>รายชื่อหนังและซีรี่</h2>
@@ -46,6 +57,7 @@
         </div>
     </div>
 
+    <!-- (ส่วนสคริปต์ Firebase เหมือนเดิม) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
@@ -53,3 +65,4 @@
     <script src="app.js"></script>
 </body>
 </html>
+
