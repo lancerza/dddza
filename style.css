@@ -1,0 +1,156 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #141414;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 1rem 0; /* เพิ่ม padding บนล่าง */
+}
+
+#auth-container, #app-container {
+    background-color: #000;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 2rem;
+    width: 90%; /* ปรับความกว้างให้ยืดหยุ่น */
+    max-width: 600px; /* เพิ่มความกว้างสูงสุด */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #E50914; /* Netflix Red */
+}
+
+input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #fff;
+    box-sizing: border-box; 
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #E50914;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #f6121d;
+}
+
+.form-container a {
+    color: #aaa;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.form-container a:hover {
+    color: #fff;
+}
+
+.error-message {
+    color: #E50914;
+    font-size: 0.9rem;
+    text-align: center;
+    min-height: 1.2em; /* จองพื้นที่ไว้กันกระโดด */
+    display: none; 
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* รองรับจอเล็ก */
+    gap: 10px;
+}
+
+.header h3 {
+    margin: 0;
+    word-break: break-all; /* ตัดคำถ้าอีเมลยาว */
+}
+
+.header button {
+    width: auto;
+    padding: 8px 12px;
+    background-color: #555;
+}
+.header button:hover {
+    background-color: #777;
+}
+
+hr {
+    border: 1px solid #333;
+    margin: 1.5rem 0;
+}
+
+/* --- ส่วนของ Player และ List --- */
+
+#player-container {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#movie-list-container {
+    margin-top: 1rem;
+}
+
+.movie-item {
+    background-color: #222;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    display: flex; /* จัดเรียงปุ่มกับข้อความ */
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* รองรับจอเล็ก */
+    gap: 10px;
+}
+
+.movie-info {
+    flex-grow: 1; /* ให้ข้อมูลหนังใช้พื้นที่ที่เหลือ */
+}
+
+.movie-info h4 {
+    margin: 0 0 5px 0;
+    color: #E50914;
+}
+
+.movie-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.play-button {
+    width: auto; /* ไม่ต้องเต็ม 100% */
+    padding: 8px 16px;
+    background-color: #E50914;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    flex-shrink: 0; /* ไม่ให้ปุ่มหดตัว */
+}
+
+.play-button:hover {
+    background-color: #f6121d;
+}
