@@ -4,21 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เว็บหนังซีรี่ (FLOWTV)</title>
-    
+
     <!-- โหลดฟอนต์ Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- (★ ใหม่) Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" xintegrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link rel="stylesheet" href="style.css">
-    
+
     <!-- สคริปต์ JW PLAYER -->
     <script src="//content.jwplatform.com/libraries/SAHhwvZq.js"></script>
 
 </head>
 <body>
 
-    <!-- (ส่วน Auth Container เหมือนเดิม) -->
+    <!-- ส่วน Auth Container (เหมือนเดิม) -->
     <div id="auth-container">
         <!-- ฟอร์มล็อกอิน -->
         <div id="login-form" class="form-container">
@@ -40,39 +43,64 @@
         </div>
     </div>
 
-    <!-- ส่วนสำหรับผู้ที่ล็อกอินแล้ว -->
+    <!-- (★ แก้ไข) ส่วน App Container (เพิ่ม Profile Link) -->
     <div id="app-container" style="display: none;">
-        <div class="header"> 
+        <div class="header">
             <h3>ยินดีต้อนรับ <span id="user-email"></span> <span id="premium-badge" style="display:none;">👑 PREMIUM</span></h3>
-            <button id="btn-logout">ออกจากระบบ</button>
+            <div class="header-actions"> {/* Wrap buttons */}
+                <a href="#" id="profile-link" class="header-link"><i class="fas fa-user"></i> ข้อมูลส่วนตัว</a> {/* <<< ลิงก์ใหม่ */}
+                <button id="btn-logout"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
+            </div>
         </div>
-        
-        <!-- ▼▼▼ (ใหม่) ช่อง Search Bar ▼▼▼ -->
-        <div class="search-container">
-            <input type="text" id="search-bar" placeholder="ค้นหาซีรี่ส์...">
+
+        {/* ส่วนแสดงรายการหนัง (ซ่อน/แสดง สลับกับ Profile) */}
+        <div id="movie-section">
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="ค้นหาซีรี่ส์...">
+            </div>
+            <div id="player-container" style="display: none;"></div>
+            <hr id="player-hr" style="display: none;"> {/* เส้นคั่นหลัง Player */}
+            <h2>รายชื่อหนังและซีรี่</h2>
+            <div id="movie-list-container">
+                <p>กำลังโหลด...</p>
+            </div>
         </div>
-        
-        <div id="player-container" style="display: none;"></div>
-        <hr>
-        
-        <h2>รายชื่อหนังและซีรี่</h2>
-        <div id="movie-list-container">
-            <!-- (Grid Layout จะถูกสร้างที่นี่) -->
-            <p>กำลังโหลด...</p>
+
+        {/* (★ ใหม่) ส่วน Profile (ซ่อนไว้ก่อน) */}
+        <div id="profile-container" style="display: none;">
+             <button id="back-to-movies-btn" class="back-button"><i class="fas fa-arrow-left"></i> กลับ</button>
+            <h2><i class="fas fa-user-circle"></i> ข้อมูลบัญชี</h2>
+            <div id="profile-details">
+                <p><strong>อีเมล:</strong> <span id="profile-email">Loading...</span></p>
+                <p><strong>สถานะ:</strong> <span id="profile-status">Loading...</span></p>
+                <p><strong>Premium หมดอายุ:</strong> <span id="profile-expiry">Loading...</span></p>
+                {/* อาจจะเพิ่มปุ่ม "เปลี่ยนรหัสผ่าน" */}
+                <button id="change-password-btn" class="secondary-button" style="margin-top: 10px;">เปลี่ยนรหัสผ่าน</button>
+            </div>
+            <hr>
+            <h2><i class="fas fa-history"></i> ประวัติการรับชมล่าสุด</h2>
+            <div id="profile-watch-history" class="watch-history-list">
+                <p id="history-loading-msg">กำลังโหลดประวัติ...</p>
+                {/* รายการประวัติจะถูกเพิ่มที่นี่ */}
+            </div>
+             {/* ปุ่มล้างประวัติ */}
+             <button id="clear-history-btn" class="danger-button" style="margin-right: 10px;">ล้างประวัติการดูทั้งหมด</button>
+
         </div>
+
     </div>
-    
-    <!-- ▼▼▼ (ใหม่) โครงสร้าง Modal (Pop-up) ▼▼▼ -->
+
+    <!-- โครงสร้าง Modal (Pop-up) (เหมือนเดิม) -->
     <div id="modal-backdrop" class="modal-backdrop" style="display: none;">
         <div id="modal-content" class="modal-content">
             <button id="modal-close-btn" class="modal-close-btn">&times;</button>
             <div id="modal-body">
-                <!-- (ข้อมูล Modal จะถูกเติมที่นี่โดย JS) -->
+                {/* ข้อมูล Modal */}
             </div>
         </div>
     </div>
 
-    <!-- (ส่วนสคริปต์ Firebase เหมือนเดิม) -->
+    <!-- สคริปต์ Firebase (เหมือนเดิม) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
@@ -80,4 +108,3 @@
     <script src="app.js"></script>
 </body>
 </html>
-
