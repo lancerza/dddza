@@ -187,6 +187,7 @@ function fetchMovies() {
     movieListContainer.innerHTML = skeletonHTML; // แสดง Skeleton
     
     // ดึงข้อมูลจริง (สมมติว่า data.json ของคุณอัปเดตแล้ว)
+    // ★★★ อย่าลืมเปลี่ยน URL นี้เป็น URL ของ data.json ที่คุณอัปโหลดไว้ ★★★
     const dataUrl = 'https://raw.githubusercontent.com/lancerza/dddza/main/data.json'; 
     const cacheBustUrl = dataUrl + '?cachebust=' + new Date().getTime();
 
@@ -232,7 +233,7 @@ function renderMovieRows(movies) {
     }, {});
 
     // --- 2. จัดลำดับการแสดงผลแบบไดนามิก (เหมือนเดิม) ---
-    const preferredOrder = ['หนังไทย', 'ซีรี่ส์ฝรั่ง', 'ซีรี่ส์เกาหลี', 'การ์ตูน'];
+    const preferredOrder = ['หนังไทย', 'ซีรี่ส์ฝรั่ง', 'ซีรี่ส์เกาหลี', 'การ์ตูน']; // ★ สามารถปรับลำดับหมวดหมู่หลักได้ที่นี่
     const otherCategories = Object.keys(moviesByCategory)
         .filter(category => !preferredOrder.includes(category) && category !== 'อื่นๆ')
         .sort(); 
@@ -263,7 +264,7 @@ function renderMovieRows(movies) {
                 const isHD = movie.isHD || false;
                 const rating = movie.rating || 0;
                 const epInfo = movie.episodeInfo || '';
-                const desc = movie.description_short || movie.genre || '';
+                const desc = movie.description_short || movie.genre || ''; // ถ้าไม่มี desc สั้น ให้ใช้ genre แทน
                 const poster = movie.posterUrl || 'https://placehold.co/180x270/EDF2F7/718096?text=No+Image';
 
                 // (ใหม่) สร้าง HTML ด้วย Template Literal
@@ -287,13 +288,13 @@ function renderMovieRows(movies) {
                 
                 // --- 5. (★ ใหม่) เพิ่ม Event Listeners ให้กับปุ่มใน Overlay ---
                 
-                // ปุ่ม Info (ⓘ)
+                // ปุ่ม Info (ⓘ) -> เปิด Modal เพื่อเลือกตอน
                 movieElement.querySelector('.btn-overlay-info').addEventListener('click', (e) => {
                     e.stopPropagation(); // ป้องกัน event ซ้อน
                     openModal(movie); 
                 });
 
-                // ปุ่ม Play (▶)
+                // ปุ่ม Play (▶) -> เล่นเลย (ถ้าเป็นซีรีส์จะเล่นตอน 1)
                 movieElement.querySelector('.btn-overlay-play').addEventListener('click', (e) => {
                     e.stopPropagation();
                     
@@ -319,6 +320,7 @@ function renderMovieRows(movies) {
                     } else if (streamUrlToPlay) {
                         playMovie(streamUrlToPlay, contentIdToPlay);
                     } else {
+                        // ถ้าไม่มี streamUrl และ ไม่มี episodes
                         alert('ไม่พบลิงก์สำหรับเล่น');
                     }
                 });
@@ -443,27 +445,29 @@ async function playMovie(videoUrl, contentId) {
             width: "100%",
             aspectratio: "16:9",
             autoplay: true,
-            // เริ่มเล่นจากเวลาที่บันทึกไว้
+            // เริ่มเล่นจากเวลาที่บันทึกไว้ (ลบ 5 วิ เผื่อทวนความจำ)
             starttime: savedPosition > 5 ? savedPosition - 5 : 0 
         });
 
         playerDiv.scrollIntoView({ behavior: 'smooth' });
 
         // --- 2. บันทึกประวัติการดู (Save) ---
-        if (docRef) { 
+        if (docRef) { // ถ้า user ล็อกอิน และเรามี docRef
             let lastSaveTime = 0;
             const saveInterval = 10000; // บันทึกทุกๆ 10 วินาที (10000ms)
 
             jwplayer("player-container").on('time', (event) => {
                 const now = Date.now();
+                // "Throttle" - จำกัดการเขียนลง DB ไม่ให้บ่อยเกินไป
                 if (now - lastSaveTime > saveInterval) {
                     const currentPosition = event.position;
+                    // ไม่บันทึกถ้าดูใกล้จบมากแล้ว (เช่น เหลือ 30 วิ)
                     if (event.duration > 0 && (event.duration - currentPosition) > 30) {
                         docRef.set({
                             position: currentPosition,
                             lastWatched: new Date(),
                             duration: event.duration
-                        }, { merge: true }); 
+                        }, { merge: true }); // merge: true เพื่อไม่ให้เขียนทับฟิลด์อื่น
                         
                         lastSaveTime = now;
                     }
