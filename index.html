@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เว็บหนังซีรี่ (FLOWTV)</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="//content.jwplatform.com/libraries/SAHhwvZq.js"></script>
+
+</head>
+<body>
+
+    <div id="auth-container">
+        <div id="login-form" class="form-container">
+            <h2>เข้าสู่ระบบ</h2>
+            <input type="email" id="login-email" placeholder="อีเมล" required>
+            <input type="password" id="login-password" placeholder="รหัสผ่าน" required>
+            <button id="btn-login">ล็อกอิน</button>
+            <p class="error-message" id="login-error"></p>
+            <a href="#" id="show-register">ยังไม่มีบัญชี? สมัครสมาชิก</a>
+        </div>
+
+        <div id="register-form" class="form-container" style="display: none;">
+            <h2>สมัครสมาชิก</h2>
+            <input type="email" id="register-email" placeholder="อีเมล" required>
+            <input type="password" id="register-password" placeholder="รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)" required>
+            <button id="btn-register">สมัครสมาชิก</button>
+            <p class="error-message" id="register-error"></p>
+            <a href="#" id="show-login">มีบัญชีแล้ว? เข้าสู่ระบบ</a>
+        </div>
+    </div>
+
+    <div id="app-container" style="display: none;">
+        <div class="header">
+            <h3>ยินดีต้อนรับ <span id="user-email"></span>!</h3>
+            <button id="btn-logout">ออกจากระบบ</button>
+        </div>
+        
+        <div id="player-container"></div>
+        <hr>
+        
+        <h2>รายชื่อหนังและซีรี่</h2>
+        <div id="movie-list-container">
+            <p>กำลังโหลด...</p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+    <script src="app.js"></script>
+</body>
+</html>
