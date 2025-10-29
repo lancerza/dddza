@@ -31,171 +31,39 @@ body {
 }
 
 /* --- ส่วน AUTH (เหมือนเดิม) --- */
-.form-container h2 {
-    text-align: center;
-    color: #3182CE; 
-    font-weight: 700;
-}
-input[type="email"], input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 1rem;
-    background-color: #F7FAFC;
-    border: 1px solid #E0E6ED;
-    border-radius: 6px; 
-    color: #1A202C;
-    box-sizing: border-box; 
-    font-family: 'Inter', Arial, sans-serif;
-}
-input[type="email"]:focus, input[type="password"]:focus {
-    outline: none;
-    border-color: #3182CE;
-    box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
-}
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #3182CE;
-    border: none;
-    border-radius: 6px;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.2s;
-}
-button:hover {
-    background-color: #2B6CB0;
-}
-.form-container a {
-    color: #3182CE; 
-    text-decoration: none;
-    display: block;
-    text-align: center;
-    margin-top: 1rem;
-    font-weight: 600;
-}
-.form-container a:hover {
-    text-decoration: underline;
-}
-.error-message {
-    color: #E53E3E; 
-    font-size: 0.9rem;
-    text-align: center;
-    min-height: 1.2em;
-    display: none; 
-}
+.form-container h2 { text-align: center; color: #3182CE; font-weight: 700; }
+input[type="email"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 1rem; background-color: #F7FAFC; border: 1px solid #E0E6ED; border-radius: 6px; color: #1A202C; box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; }
+input[type="email"]:focus, input[type="password"]:focus { outline: none; border-color: #3182CE; box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); }
+button { width: 100%; padding: 12px; background-color: #3182CE; border: none; border-radius: 6px; color: #fff; font-weight: 700; cursor: pointer; font-size: 1rem; transition: background-color 0.2s; }
+button:hover { background-color: #2B6CB0; }
+.form-container a { color: #3182CE; text-decoration: none; display: block; text-align: center; margin-top: 1rem; font-weight: 600; }
+.form-container a:hover { text-decoration: underline; }
+.error-message { color: #E53E3E; font-size: 0.9rem; text-align: center; min-height: 1.2em; display: none; }
 
 /* --- ส่วน APP (เหมือนเดิม) --- */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap; 
-    gap: 10px;
-    border-bottom: 1px solid #E0E6ED; 
-    padding-bottom: 1rem;
-}
-.header h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #1A202C;
-}
-#premium-badge {
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 20px;
-    background: #3182CE;
-    color: white;
-    margin-left: 10px;
-    vertical-align: middle;
-}
-.header button {
-    width: auto;
-    padding: 8px 12px;
-    background-color: #EDF2F7;
-    color: #4A5568;
-    font-size: 0.9rem;
-    font-weight: 700;
-    border-radius: 6px;
-}
-.header button:hover {
-    background-color: #E0E6ED;
-}
-hr {
-    border: 0;
-    border-top: 1px solid #E0E6ED;
-    margin: 1.5rem 0;
-}
+.header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid #E0E6ED; padding-bottom: 1rem; }
+.header h3 { margin: 0; font-size: 1.2rem; font-weight: 700; color: #1A202C; }
+#premium-badge { font-size: 0.8rem; font-weight: 700; padding: 4px 8px; border-radius: 20px; background: #3182CE; color: white; margin-left: 10px; vertical-align: middle; }
+.header button { width: auto; padding: 8px 12px; background-color: #EDF2F7; color: #4A5568; font-size: 0.9rem; font-weight: 700; border-radius: 6px; }
+.header button:hover { background-color: #E0E6ED; }
+hr { border: 0; border-top: 1px solid #E0E6ED; margin: 1.5rem 0; }
 
 /* --- Search Bar (เหมือนเดิม) --- */
-.search-container {
-    width: 100%;
-    margin: 1rem 0;
-}
-#search-bar {
-    width: 100%;
-    padding: 12px 16px;
-    font-size: 1rem;
-    font-family: 'Inter', Arial, sans-serif;
-    border: 1px solid #E0E6ED;
-    border-radius: 6px;
-    background-color: #F7FAFC;
-    color: #1A202C;
-    box-sizing: border-box;
-}
-#search-bar:focus {
-    outline: none;
-    border-color: #3182CE;
-    box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
-}
-
+.search-container { width: 100%; margin: 1rem 0; }
+#search-bar { width: 100%; padding: 12px 16px; font-size: 1rem; font-family: 'Inter', Arial, sans-serif; border: 1px solid #E0E6ED; border-radius: 6px; background-color: #F7FAFC; color: #1A202C; box-sizing: border-box; }
+#search-bar:focus { outline: none; border-color: #3182CE; box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); }
 
 /* --- Player (เหมือนเดิม) --- */
-#player-container {
-    width: 100%;
-    margin-bottom: 1rem;
-    background-color: #000; 
-    border-radius: 8px;
-    overflow: hidden;
-}
+#player-container { width: 100%; margin-bottom: 1rem; background-color: #000; border-radius: 8px; overflow: hidden; }
 
-/* --- (แก้) ลิสต์หนัง (Container) --- */
-#movie-list-container {
-    margin-top: 1.5rem;
-    display: flex; 
-    flex-direction: column; 
-    gap: 1.5rem; /* ระยะห่างระหว่างแถว */
-}
-/* (แก้) H2 ที่เป็นชื่อเรื่องหลัก */
-h2 {
-    font-weight: 700;
-    color: #1A202C;
-    margin-bottom: 0;
-}
-/* (ใหม่) H2 ที่เป็นชื่อหมวดหมู่ */
-#movie-list-container > h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1A202C;
-    margin: 0;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #3182CE;
-}
-
-/* (แก้) Grid สำหรับแต่ละแถวหมวดหมู่ (เป็น Flex แนวนอน) */
-.movie-grid {
-    display: flex;       /* เปลี่ยนจาก grid */
-    overflow-x: auto;  /* ★ ทำให้เลื่อนแนวนอนได้ */
-    overflow-y: hidden;  /* ซ่อน scrollbar แนวตั้ง */
-    gap: 1.5rem;
-    padding-bottom: 1rem; /* เพิ่มที่ว่างให้ scrollbar */
-}
+/* --- (แก้) ลิสต์หนัง (Container) (เหมือนเดิม) --- */
+#movie-list-container { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+h2 { font-weight: 700; color: #1A202C; margin-bottom: 0; }
+#movie-list-container > h2 { font-size: 1.5rem; font-weight: 700; color: #1A202C; margin: 0; padding-bottom: 0.5rem; border-bottom: 2px solid #3182CE; }
+.movie-grid { display: flex; overflow-x: auto; overflow-y: hidden; gap: 1.5rem; padding-bottom: 1rem; }
 
 
-/* --- (แก้) การ์ดหนัง (movie-item) (ปรับปรุง) --- */
+/* --- (★ อัปเกรด) การ์ดหนัง (movie-item) --- */
 .movie-item {
     background: #FFFFFF;
     border-radius: 8px;
@@ -204,33 +72,22 @@ h2 {
     display: flex; 
     flex-direction: column; 
     overflow: hidden; 
-    cursor: pointer; 
+    /* (แก้) ไม่ต้องใช้ cursor: pointer ที่ตัวการ์ดแล้ว */
     
-    /* (ใหม่) เพิ่ม 3 บรรทัดนี้ */
-    position: relative; /* ★ เพื่อให้ป้ายและ overlay ลอยทับได้ */
-    width: 180px;     /* ★ กำหนดความกว้างคงที่ */
-    flex-shrink: 0;   /* ★ ไม่ให้การ์ดหดตัว */
+    position: relative; /* ★ สำคัญมากสำหรับ Badges และ Overlay */
+    width: 180px;     
+    flex-shrink: 0;   
 }
 .movie-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 .movie-item:hover .movie-poster {
-    transform: scale(1.05); /* (ใหม่) ซูมรูปเล็กน้อยตอน hover */
+    transform: scale(1.05); 
 }
-
-/* (ใหม่) ป้าย Premium บนการ์ด */
-.card-premium-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: #3182CE;
-    color: white;
-    font-size: 0.8rem;
-    padding: 4px 6px;
-    border-radius: 6px;
-    z-index: 2;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+.movie-item:hover .movie-details-overlay {
+    opacity: 1; /* ★ แสดง Overlay เมื่อ Hover */
+    transform: translateY(0);
 }
 
 .movie-poster {
@@ -239,184 +96,145 @@ h2 {
     object-fit: cover; 
     flex-shrink: 0; 
     background-color: #EDF2F7; 
-    border-bottom: 1px solid #E0E6ED;
-    transition: transform 0.3s ease; /* (ใหม่) เพิ่ม transition */
+    transition: transform 0.3s ease;
 }
 
-/* (แก้) movie-details (ปรับเป็น Overlay) */
-.movie-details {
-    display: flex;
-    flex-direction: column; 
+/* --- (★ ใหม่) Badges บนการ์ด --- */
+.badge {
+    position: absolute;
+    top: 8px;
+    z-index: 2;
+    padding: 4px 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 4px;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.badge-premium {
+    left: 8px;
+    background: #3182CE; /* 👑 */
+}
+.badge-hd {
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6); /* HD */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+.badge-rating {
+    top: 34px; /* อยู่ใต้ HD */
+    right: 8px;
+    background: #E53E3E; /* ⭐ */
+}
 
+
+/* --- (★ อัปเกรด) Overlay --- */
+.movie-details-overlay {
     /* (แก้) ทำให้เป็น Overlay */
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     
-    /* ไล่สีจางๆ ไปทึบ */
-    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
-    padding: 2.5rem 1rem 1rem 1rem; /* เพิ่ม padding ด้านบนให้ไล่สี */
+    /* (แก้) ไล่สีให้เข้มขึ้น */
+    background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
+    padding: 1rem; 
     
     /* (แก้) ซ่อนไว้ก่อน */
     opacity: 0;
     transform: translateY(10px);
     transition: all 0.3s ease;
+    
+    /* (ใหม่) จัดการเนื้อหาใน Overlay */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* ★ ดันเนื้อหาลงล่าง */
+    height: 100%; /* ★ ให้เต็มความสูงการ์ด */
+    box-sizing: border-box;
 }
 
-.movie-item:hover .movie-details {
-    opacity: 1; /* (ใหม่) แสดงผลเมื่อ Hover */
-    transform: translateY(0);
-}
-
-.movie-info {
-    flex-grow: 1; 
-}
-.movie-info h4 {
+.movie-details-overlay h4 {
     margin: 0 0 4px 0; 
-    color: #FFFFFF; /* (แก้) สีขาวสำหรับ Overlay */
+    color: #FFFFFF; 
     font-size: 1.1rem; 
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.movie-info p {
-    margin: 0;
-    font-size: 0.85rem; 
-    color: #E0E6ED; /* (แก้) สีเทาอ่อนสำหรับ Overlay */
+.movie-details-overlay p.desc {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.8rem; 
+    color: #A0AEC0; /* สีเทาอ่อน */
+    line-height: 1.3;
+}
+.overlay-ep-info {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #3182CE; /* สีฟ้า */
 }
 
-.movie-actions {
-    display: none; 
+/* --- (★ ใหม่) ปุ่มบน Overlay --- */
+.overlay-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 0.5rem;
 }
+.btn-overlay {
+    width: auto;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    flex-grow: 1; /* ทำให้ปุ่มขยายเต็ม */
+}
+.btn-overlay-play {
+    background-color: #3182CE;
+    color: white;
+}
+.btn-overlay-play:hover {
+    background-color: #2B6CB0;
+}
+.btn-overlay-info {
+    background-color: rgba(74, 85, 104, 0.7); /* สีเทาโปร่งแสง */
+    color: white;
+    flex-grow: 0; /* ปุ่ม ⓘ ไม่ต้องขยาย */
+    padding: 6px 8px;
+}
+.btn-overlay-info:hover {
+    background-color: rgba(42, 52, 69, 0.7);
+}
+
 
 /* --- สไตล์ Modal (Pop-up) (เหมือนเดิม) --- */
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    padding: 1rem;
-    box-sizing: border-box;
-}
+.modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 1rem; box-sizing: border-box; }
+.modal-content { background: #fff; border-radius: 12px; padding: 2rem; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+.modal-close-btn { position: absolute; top: 1rem; right: 1rem; width: 40px; height: 40px; font-size: 1.5rem; font-weight: 700; color: #A0AEC0; background: #EDF2F7; border: none; border-radius: 50%; cursor: pointer; line-height: 40px; text-align: center; padding: 0; }
+.modal-close-btn:hover { background: #E0E6ED; color: #4A5568; }
+.modal-body-content { display: flex; gap: 1.5rem; }
+@media (max-width: 600px) { .modal-body-content { flex-direction: column; } }
+.modal-poster { width: 150px; height: 225px; object-fit: cover; border-radius: 8px; flex-shrink: 0; border: 1px solid #E0E6ED; }
+.modal-info { flex-grow: 1; }
+.modal-info h2 { margin: 0 0 8px 0; font-size: 1.8rem; color: #1A202C; }
+.modal-info p { font-size: 1rem; color: #4A5568; margin: 0 0 1.5rem 0; }
+.modal-episodes-title { font-size: 1.2rem; font-weight: 700; color: #1A202C; margin: 0 0 1rem 0; border-bottom: 1px solid #E0E6ED; padding-bottom: 0.5rem; }
+.modal-episodes-list { display: flex; flex-wrap: wrap; gap: 8px; }
 
-.modal-content {
-    background: #fff;
-    border-radius: 12px;
-    padding: 2rem;
-    width: 100%;
-    max-width: 700px;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
+/* --- ปุ่ม Play (ใน Modal) (เหมือนเดิม) --- */
+.play-button { width: auto; padding: 8px 12px; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; border-radius: 20px; background: #EDF2F7; color: #4A5568; border: none; transition: all 0.2s; }
+.play-button:hover { background: #E0E6ED; transform: none; }
+.play-button.premium-unlocked { background: #3182CE; color: white; font-weight: 700; }
+.play-button.premium-unlocked:hover { background: #2B6CB0; }
+.play-button.premium-locked { background: #EDF2F7; color: #A0AEC0; cursor: not-allowed; opacity: 0.8; }
+.play-button.premium-locked:hover { background: #EDF2F7; transform: none; }
 
-.modal-close-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #A0AEC0;
-    background: #EDF2F7;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    line-height: 40px;
-    text-align: center;
-    padding: 0;
-}
-.modal-close-btn:hover {
-    background: #E0E6ED;
-    color: #4A5568;
-}
+/* --- (ใหม่) CSS สำหรับ Skeleton Loader (จากครั้งก่อน) --- */
+@keyframes skeleton-pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+.skeleton-title { height: 30px; width: 250px; margin-bottom: 1rem; background-color: #E0E6ED; border-radius: 6px; animation: skeleton-pulse 1.5s infinite ease-in-out; }
+.skeleton-card { width: 180px; height: 270px; flex-shrink: 0; background-color: #E0E6ED; border-radius: 8px; animation: skeleton-pulse 1.5s infinite ease-in-out; }
 
-.modal-body-content {
-    display: flex;
-    gap: 1.5rem;
-}
-@media (max-width: 600px) {
-    .modal-body-content {
-        flex-direction: column;
-    }
-}
-.modal-poster {
-    width: 150px;
-    height: 225px;
-    object-fit: cover;
-    border-radius: 8px;
-    flex-shrink: 0;
-    border: 1px solid #E0E6ED;
-}
-.modal-info {
-    flex-grow: 1;
-}
-.modal-info h2 {
-    margin: 0 0 8px 0;
-    font-size: 1.8rem;
-    color: #1A202C;
-}
-.modal-info p {
-    font-size: 1rem;
-    color: #4A5568;
-    margin: 0 0 1.5rem 0;
-}
-.modal-episodes-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #1A202C;
-    margin: 0 0 1rem 0;
-    border-bottom: 1px solid #E0E6ED;
-    padding-bottom: 0.5rem;
-}
-.modal-episodes-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-/* --- ปุ่ม Play (เหมือนเดิม) --- */
-.play-button {
-    width: auto; 
-    padding: 8px 12px; 
-    font-size: 0.8rem; 
-    font-weight: 600;
-    flex-shrink: 0; 
-    border-radius: 20px;
-    background: #EDF2F7; 
-    color: #4A5568;
-    border: none;
-    transition: all 0.2s;
-}
-.play-button:hover {
-    background: #E0E6ED;
-    transform: none; 
-}
-.play-button.premium-unlocked {
-    background: #3182CE;
-    color: white;
-    font-weight: 700;
-}
-.play-button.premium-unlocked:hover {
-    background: #2B6CB0;
-}
-.play-button.premium-locked {
-    background: #EDF2F7;
-    color: #A0AEC0;
-    cursor: not-allowed;
-    opacity: 0.8;
-}
-.play-button.premium-locked:hover {
-    background: #EDF2F7;
-    transform: none;
-}
+/* --- (ใหม่) CSS สำหรับ Player Error (จากครั้งก่อน) --- */
+.player-error-message { width: 100%; background: #FFF5F5; border: 1px solid #E53E3E; color: #C53030; padding: 1.5rem; text-align: center; border-radius: 8px; box-sizing: border-box; }
+.player-error-message h3 { margin: 0 0 0.5rem 0; color: #C53030; }
+.player-error-message p { margin: 0; font-size: 0.9rem; }
