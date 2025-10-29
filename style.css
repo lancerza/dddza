@@ -1,110 +1,150 @@
+/* --- (ใหม่) Import Font (ยังใช้ Inter เหมือนเดิม) --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #141414;
-    color: #fff;
+    font-family: 'Inter', Arial, sans-serif;
+    /* (ใหม่) พื้นหลังสีเทาอ่อน */
+    background-color: #F4F7FA;
+    color: #1A202C; /* (ใหม่) ตัวหนังสือสีเทาเข้ม */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
     margin: 0;
-    padding: 2rem 0; /* เพิ่ม padding บนล่างเผื่อเนื้อหายาว */
+    padding: 2rem 0; 
     box-sizing: border-box;
 }
 
 #auth-container, #app-container {
-    background-color: #000;
-    border: 1px solid #333;
-    border-radius: 8px;
+    /* (ใหม่) พื้นหลังสีขาว */
+    background-color: #FFFFFF;
+    /* (ใหม่) เส้นขอบบางๆ */
+    border: 1px solid #E0E6ED;
+    /* (ใหม่) เพิ่มความมน */
+    border-radius: 12px;
     padding: 2rem;
-    width: 90%; /* ปรับความกว้างให้ยืดหยุ่น */
-    max-width: 700px; /* ขยายความกว้างสูงสุดสำหรับเลย์เอาต์ใหม่ */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    width: 90%; 
+    max-width: 900px; 
+    /* (ใหม่) เงาแบบเบาๆ */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
-/* --- ส่วน AUTH --- */
+#auth-container:not([style*="display: none"]) {
+    max-width: 450px; 
+}
 
+/* --- ส่วน AUTH (ปรับเป็นคลีน) --- */
 .form-container h2 {
     text-align: center;
-    color: #E50914; /* Netflix Red */
+    /* (ใหม่) สีหลัก (น้ำเงิน) */
+    color: #3182CE; 
+    font-weight: 700;
 }
 
 input[type="email"], input[type="password"] {
     width: 100%;
     padding: 12px;
     margin-bottom: 1rem;
-    background-color: #333;
-    border: 1px solid #555;
-    border-radius: 4px;
-    color: #fff;
+    /* (ใหม่) สไตล์ช่องกรอก */
+    background-color: #F7FAFC;
+    border: 1px solid #E0E6ED;
+    border-radius: 6px; /* (แก้) */
+    color: #1A202C;
     box-sizing: border-box; 
+    font-family: 'Inter', Arial, sans-serif;
+}
+input[type="email"]:focus, input[type="password"]:focus {
+    outline: none;
+    border-color: #3182CE;
+    box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
 }
 
+/* (ใหม่) ปุ่ม Login/Register สีน้ำเงิน */
 button {
     width: 100%;
     padding: 12px;
-    background-color: #E50914;
+    background-color: #3182CE;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     color: #fff;
-    font-weight: bold;
+    font-weight: 700;
     cursor: pointer;
     font-size: 1rem;
+    transition: background-color 0.2s;
 }
-
 button:hover {
-    background-color: #f6121d;
+    background-color: #2B6CB0;
 }
 
 .form-container a {
-    color: #aaa;
+    color: #3182CE; /* (ใหม่) */
     text-decoration: none;
     display: block;
     text-align: center;
     margin-top: 1rem;
+    font-weight: 600;
 }
-
 .form-container a:hover {
-    color: #fff;
+    text-decoration: underline;
 }
 
 .error-message {
-    color: #E50914;
+    color: #E53E3E; /* (ใหม่) สีแดงสำหรับ Error */
     font-size: 0.9rem;
     text-align: center;
-    min-height: 1.2em; /* จองพื้นที่ไว้กันกระโดด */
+    min-height: 1.2em;
     display: none; 
 }
 
-/* --- ส่วน APP (หลังล็อกอิน) --- */
+/* --- ส่วน APP (ปรับเป็นคลีน) --- */
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap; /* รองรับจอเล็ก */
+    flex-wrap: wrap; 
     gap: 10px;
+    border-bottom: 1px solid #E0E6ED; /* (ใหม่) */
+    padding-bottom: 1rem;
 }
-
 .header h3 {
     margin: 0;
-    font-size: 1rem;
-    word-break: break-all; /* ตัดคำถ้าอีเมลยาว */
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1A202C;
 }
 
+/* (ใหม่) ป้าย Premium สีน้ำเงิน */
+#premium-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 20px;
+    background: #3182CE;
+    color: white;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+/* (ใหม่) ปุ่ม Logout */
 .header button {
     width: auto;
     padding: 8px 12px;
-    background-color: #555;
+    background-color: #EDF2F7;
+    color: #4A5568;
     font-size: 0.9rem;
+    font-weight: 700;
+    border-radius: 6px;
 }
 .header button:hover {
-    background-color: #777;
+    background-color: #E0E6ED;
 }
 
 hr {
     border: 0;
-    border-top: 1px solid #333;
+    border-top: 1px solid #E0E6ED;
     margin: 1.5rem 0;
 }
 
@@ -112,74 +152,116 @@ hr {
 #player-container {
     width: 100%;
     margin-bottom: 1rem;
-    background-color: #000; /* พื้นหลังสีดำเผื่อ player ยังไม่โหลด */
+    background-color: #000; 
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-/* --- ลิสต์หนัง (ใหม่) --- */
+/* --- ลิสต์หนัง (คลีน) --- */
+h2 {
+    font-weight: 700;
+    color: #1A202C;
+}
 #movie-list-container {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
 
 .movie-item {
-    background-color: #222;
+    background: #FFFFFF;
     padding: 1rem;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-bottom: 1rem; 
     display: flex; 
-    align-items: flex-start; /* จัดให้อยู่บนสุด */
-    gap: 1rem; /* ระยะห่างระหว่างรูปกับข้อมูล */
+    align-items: flex-start; 
+    gap: 1.5rem;
+    border: 1px solid #E0E6ED; /* (ใหม่) */
+    transition: background-color 0.2s ease;
+    /* (ลบ) เอฟเฟกต์หนักๆ ออก */
+}
+.movie-item:hover {
+    background-color: #F7FAFC; /* (ใหม่) Hover เบาๆ */
 }
 
 /* โปสเตอร์ (ซ้าย) */
 .movie-poster {
-    width: 100px; 
-    height: 150px;
+    width: 130px; 
+    height: 195px;
     object-fit: cover; 
-    border-radius: 4px;
+    border-radius: 4px; 
     flex-shrink: 0; 
-    background-color: #333; /* สีพื้นหลังเผื่อรูปไม่โหลด */
+    background-color: #EDF2F7; /* (ใหม่) */
+    border: 1px solid #E0E6ED;
 }
 
 /* กล่องข้อมูล (ขวา) */
 .movie-details {
     display: flex;
     flex-direction: column; 
-    flex-grow: 1; /* ใช้พื้นที่ที่เหลือทั้งหมด */
-    min-height: 150px; /* ทำให้สูงเท่าโปสเตอร์ (ถ้าข้อมูลน้อย) */
+    flex-grow: 1; 
+    min-height: 195px;
+    justify-content: space-between;
 }
-
 .movie-info {
-    flex-grow: 1; /* ดันให้ปุ่มอยู่ล่างสุด */
+    flex-grow: 1; 
 }
-
 .movie-info h4 {
-    margin: 0 0 5px 0;
-    color: #E50914;
-    font-size: 1.1rem;
+    margin: 0 0 8px 0;
+    color: #1A202C; /* (แก้) */
+    font-size: 1.4rem;
+    font-weight: 700;
 }
-
 .movie-info p {
     margin: 0;
     font-size: 0.9rem;
-    color: #aaa;
+    color: #718096; /* (แก้) */
 }
 
 /* กล่องปุ่ม (ล่าง-ขวา) */
 .movie-actions {
     display: flex;
     flex-wrap: wrap; 
-    gap: 5px; 
-    margin-top: 10px; /* ห่างจากข้อมูล */
+    gap: 8px;
+    margin-top: 10px; 
 }
 
+/* --- (ใหม่) ดีไซน์ปุ่ม Play (คลีน) --- */
 .play-button {
     width: auto; 
-    padding: 8px 12px; 
-    font-size: 0.85rem;
+    padding: 8px 16px; 
+    font-size: 0.9rem;
+    font-weight: 600; /* (แก้) */
     flex-shrink: 0; 
-    background-color: #444; /* สีปุ่มตอน */
+    border-radius: 20px;
+    /* (ใหม่) ปุ่มเทาอ่อน */
+    background: #EDF2F7; 
+    color: #4A5568;
+    border: none;
+    transition: all 0.2s;
+}
+.play-button:hover {
+    background: #E0E6ED;
+    transform: none; /* (ลบ) */
 }
 
-.play-button:hover {
-    background-color: #555;
+/* (ใหม่) ปุ่ม Premium ที่ปลดล็อคแล้ว (สีน้ำเงิน) */
+.play-button.premium-unlocked {
+    background: #3182CE;
+    color: white;
+    font-weight: 700;
 }
+.play-button.premium-unlocked:hover {
+    background: #2B6CB0;
+}
+
+/* (ใหม่) ปุ่ม Premium ที่ยังล็อค */
+.play-button.premium-locked {
+    background: #EDF2F7;
+    color: #A0AEC0;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+.play-button.premium-locked:hover {
+    background: #EDF2F7;
+    transform: none;
+}
+
